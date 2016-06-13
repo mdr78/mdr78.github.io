@@ -9,9 +9,9 @@ Last year I upstreamed support for the Galileo Gen 1/2 to the [Yocto project](ht
 
 First off - a quick explaination. Yocto is the umbrella for a number of seperate projects Bitbake, Poky, OpenEmbedded and various BSPs.
 
-* Bitbake is the build tool - the tool that interprets recipes, figures how to build a given package, it's dependences, it's ordering relative to other packages.
-* Openembedded - provides the recipes and support scripts required to build Linux. 
-* Poky - aggregate's Bitbake and Openembedded, with policy to build a reference Linux distribution. 
+* **Bitbake** is the build tool - the tool that interprets recipes, figures how to build a given package, it's dependences, it's ordering relative to other packages.
+* **Openembedded** - provides the recipes and support scripts required to build Linux. 
+* **Poky** - aggregate's Bitbake and Openembedded, with policy to build a reference Linux distribution. 
 
 Finally before we build, the most recent version of Yocto is 2.1 'korgoth'. You will see me reference krogoth below. 
 
