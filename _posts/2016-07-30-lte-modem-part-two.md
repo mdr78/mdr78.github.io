@@ -6,9 +6,9 @@ categories: LTE router
 ---
 This post is part two of series on building a homebrew LTE router. In this post we dive into the software side of the build. If you haven't see the hardware side of the build described in the [first post](http://mdr78.github.io/lte/router/2016/05/28/lte-modem-part-one.html), its worth a quick scan to give you some context.
 
-The software is packaged as a bitbake layer on top of Yocto 2.1 Krogoth. I describe the steps to build Yocto Krogoth for the Intel Galileo Gen 1/2 in a [previous post](http://mdr78.github.io/galileo/yocto/2016/06/01/yocto-for-quark.html), again its worth a quick scan to give you some context.
+The software is packaged as a bitbake layer on top of [Yocto 2.1 Krogoth](https://www.yoctoproject.org/downloads/core/krogoth21). I describe the steps to build Yocto Krogoth for the Intel Galileo Gen 1/2 in a [previous post](http://mdr78.github.io/galileo/yocto/2016/06/01/yocto-for-quark.html), again its worth a quick scan to give you some context.
 
-You can find the layer described in this post in the [meta-lte-modem github repo](https://github.com/mdr78/meta-lte-modem). For the impatent, you can just `git clone` the [meta-lte-modem github repo](https://github.com/mdr78/meta-lte-modem), edit the APN, add the  layer to the [krogoth build for Intel Quark](http://mdr78.github.io/galileo/yocto/2016/06/01/yocto-for-quark.html) and then build `core-image-minimal` as normal. As follows ...
+You can find the layer described in this post in my [meta-lte-modem github repo](https://github.com/mdr78/meta-lte-modem). For the impatent, you can just `git clone` the [meta-lte-modem github repo](https://github.com/mdr78/meta-lte-modem), update the APN, add the  layer to the [krogoth build for Intel Quark](http://mdr78.github.io/galileo/yocto/2016/06/01/yocto-for-quark.html) and then build `core-image-minimal` as normal. As follows ...
 
 	[17:14 ] yocto > git clone https://github.com/mdr78/meta-lte-modem
 	Cloning into 'meta-lte-modem'...
@@ -18,7 +18,7 @@ You can find the layer described in this post in the [meta-lte-modem github repo
 	Unpacking objects: 100% (39/39), done.
 	Checking connectivity... done.
 	
-	[17:14 ] echo "APN=theAPN" > ./meta-lte-modem/recipes-core/initscripts/initscripts/qmi-network.conf
+	[17:14 ] echo "APN=MyISPsAPN" > ./meta-lte-modem/recipes-core/initscripts/initscripts/qmi-network.conf
 	[17:14 ] cd poky/
 	[17:15 ] poky >
 	
@@ -50,9 +50,13 @@ You can find the layer described in this post in the [meta-lte-modem github repo
 	Parsing recipes:   0% |                                                       | ETA:  00:01:39
 	...
 
-When the build is done, generate your sdcard image using `wic` and then `dd` to your as SDcard, as describe in the [build instructions](http://mdr78.github.io/galileo/yocto/2016/06/01/yocto-for-quark.html). 
+When the build is done, generate your sdcard image using `wic` and then `dd` to your as SDcard, all described in the [build instructions](http://mdr78.github.io/galileo/yocto/2016/06/01/yocto-for-quark.html). 
 
-Now diving into the detail of the code. First you will notice I have tweaked the kernel.
+Now diving into the detail of the code. 
+
+# Adding CBC MBIM and QMI support to the kernel #
+
+First you will notice I have tweaked the yocto kernel.
 
         [21:29 ] meta-lte-modem > find recipes-kernel/
         recipes-kernel/linux/linux-yocto
@@ -61,12 +65,14 @@ Now diving into the detail of the code. First you will notice I have tweaked the
         recipes-kernel/linux/linux-yocto/nomodules.cfg
         recipes-kernel/linux/linux-yocto_4.4.bbappend
 
-If you dig in here, what you will find I am doing is adding kernel configuration fragments to the kernel build. These add support for  CDC MBIM, QMI WWAN and NATing to the Kernel's configuration. You will also find I have tweaked the packages that are bundled with `core-image-minimal`.
+If you dig in here, what you will find I am doing is adding kernel configuration fragments to the kernel build. These add kernel support for CDC MBIM, QMI WWAN and NATing to the kernel's configuration. You will also find I have tweaked the packages that are bundled with `core-image-minimal`.
 
 	recipes-core/images
 	recipes-core/images/core-image-minimal.bbappend
 
-In the `core-image-minimal` bbappend I add a bunch of the usually suspects dropbear, usbutils etc. Two important packages to note are libmbim and libqmi, these add support for the CDC MBIM and QMI networking services. 
+In the `core-image-minimal` bbappend I add a bunch of the usually suspects dropbear, usbutils etc, however two important packages that are added are libmbim and libqmi, these add support for the CDC MBIM and QMI networking services. 
+
+# Enabling DHCP Server on the Ethernet Port #
 
 I add a `sysctl.conf` to turn on IP forwarding automatically on startup. 
 
@@ -80,6 +86,8 @@ I changed the interfaces files, so that the Galileo's ethernet port has a static
 	recipes-support/dnsmasq/dnsmasq/dnsmasq.conf
 	recipes-support/dnsmasq/dnsmasq_2.75.bbappend
 
+# Connecting to the Cellular network #
+
 I have tweaked the SystemV initscripts to add a service to start the QMI Networking service. The service starts `qmi-network` to do the handshaking with the cellular network, calls `udhcpc` to get an IP address from the cellular provider and add the IP Tables rules for NATing.
 
 	recipes-core/initscripts/initscripts_1.0.bbappend
@@ -88,7 +96,9 @@ I have tweaked the SystemV initscripts to add a service to start the QMI Network
 	recipes-core/initscripts/initscripts/qmi-network.conf
 	recipes-core/initscripts/initscripts/wwan.rules
 
-The file `wwan.rules` is a udev rule for Hauwei ME906E. The ME906E is a bit of a chameleon and took some figuring out, thankfully Bjørn Mork the Kernel Mantainer for the "USB QMI WWAN NETWORK DRIVER" was a huge help.  Turns out the ME906E is a bit of a chameleon, it can present itself as three serial devices (yes really!) for a PPP setup, an ethernet interface, a CDC MBIM WWAN interface and finally a QMI WWAN interface - depending on how you configure it. 
+*The Huawei me906e*
+
+The file `wwan.rules` is a udev rule for Hauwei ME906E. The ME906E is a bit of a chameleon and took some figuring out, thankfully Bjørn Mork the Kernel Mantainer for the "USB QMI WWAN NETWORK DRIVER" was a huge help.  Turns out the ME906E is a bit of a chameleon, it can present itself as three serial devices (yes really!) for a PPP setup, an ethernet interface, a CDC MBIM WWAN interface and finally a QMI WWAN interface - depending on how you configure it.
 
 The ME906E is a USB device, even though it physically connects to the Intel Galileo over mini PCI express. 
 
