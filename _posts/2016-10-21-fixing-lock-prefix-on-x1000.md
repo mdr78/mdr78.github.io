@@ -92,4 +92,4 @@ It hooks main(), fork() and mmap() to prefault memory using mlock(). It has a co
 
 You make an application specific configuration e.g. `login.conf` or a global configuration `defaults.conf`, that can be placed in either the applications working directory or `/etc/libx1000.so.d/`. 
 
-Once this library was installed, Debian Wheezy worked purfectly on the Galileo. 
+Once the [library](https://github.com/mdr78/libx1000) was installed, Debian Wheezy worked purfectly on the Galileo. 
