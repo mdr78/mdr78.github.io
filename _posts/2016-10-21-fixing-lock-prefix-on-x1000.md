@@ -34,7 +34,7 @@ This holds for most variables on the stack and the heap, that we explicitly init
 	spin_lock(x);
 	...
 
-These variables that are declared and initalized globally are described in the '.bss' section, so when they are faulted into memory they are already '0'.
+These variables that are declared and initalized globally are described in the '.bss' section.
 
 	[rkinsell@localhost _posts]$ readelf -S /bin/bash
 	There are 29 section headers, starting at offset 0x105438:
@@ -47,11 +47,11 @@ These variables that are declared and initalized globally are described in the '
 	[ 1] .interp           PROGBITS         0000000000000238  00000238
        		000000000000001c  0000000000000000   A       0     0     1
 	...
-  	[23] .got              PROGBITS         00000000002fa830  000fa830
+	[23] .got              PROGBITS         00000000002fa830  000fa830
        		00000000000007c0  0000000000000008  WA       0     0     8
-  	[24] .data             PROGBITS         00000000002fb000  000fb000
+	[24] .data             PROGBITS         00000000002fb000  000fb000
        		0000000000008568  0000000000000000  WA       0     0     32
-  	[25] .bss              NOBITS           0000000000303580  00103568
+	[25] .bss              NOBITS           0000000000303580  00103568
        		00000000000059d8  0000000000000000  WA       0     0     32
 	...
 
