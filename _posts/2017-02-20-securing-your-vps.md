@@ -2,12 +2,12 @@
 layout: post
 title:  "Securing your VPS"
 date:   2017-02-20 13:10:44 +0000
-categories: OpenWRT
+categories: VPS
 ---
 
 I recently setup a VPS with [time4vps](https://www.time4vps.eu/) - the reason why I need a VPS, is a subject for a future post. After a couple of days I logged on and was alarmed to find the following.
 
-	$ ssh -L root@myvps
+	$ ssh root@myvps
 	Last failed login: Mon Feb 20 16:27:35 EET 2017 from a.b.c.d on ssh:notty
 	There were 10012 failed login attempts since the last successful login.
 	Last login: Mon Feb 20 16:27:25 2017 from a.b.c.d
@@ -40,7 +40,7 @@ First off setup public key authenication for your user of choice and confirm it 
 	debug1: Authentication succeeded (publickey).
 	Authenticated to a.b.c.d (via proxy).
 
-Now disable Password authenication by opening `/etc/ssh/sshd_config` in your editor of choicei, and adding the following lines. 
+Now disable Password authenication by opening `/etc/ssh/sshd_config` in your editor of choice, and adding the following lines. 
 
 	PubkeyAuthentication yes
 	ChallengeResponseAuthentication no
