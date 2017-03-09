@@ -41,7 +41,7 @@ One of the most useful capabilities of Motion is it's ability to produce debug i
 	# object (ghost images) (default: off)                                          
 	ffmpeg_output_debug_movies off
 
-You can see a sample debug video this produces, the box showing the pixels that are changing frame-to-frame and are triggering motion detection. This debug video is from my garage camera, in it you can see my cat Blacky, a spider and a later on in the video an unwelcome visitor. 
+You can see a sample debug video this produces, the box showing the pixels that are changing frame-to-frame and are triggering motion detection. This debug video is from my garage camera, in it you can see my cat Blacky, a spider and later on in the video an unwelcome visitor. 
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/mdNXnHY2v50?ecver=1" frameborder="0" allowfullscreen></iframe>
 
@@ -68,7 +68,7 @@ The two most interesting settings here are area_detect, this allows you to defin
 
 	on_area_detected /usr/bin/camera_on_garage.sh
 
-Finally I override the default movie filename format to include the camera name, so I can more easly distinguish the debug output of each camera.
+Finally I override the default movie filename format to include the camera name, so I can more easily distinguish the debug output of each camera.
 
 	movie_filename %v-%Y%m%d%H%M%S-rear
 
