@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Repairing a dead Tronic Power Cube (KH 3106)"
-date:   2017-02-20 13:10:44 +0000
+date:   2018-01-19 13:10:44 +0000
 categories: Repair
 ---
 
