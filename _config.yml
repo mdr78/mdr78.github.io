@@ -16,3 +16,4 @@ github_username: mdr78
 
 # Build settings
 markdown: kramdown
+exclude: [Org]

@@ -1,0 +1,181 @@
+---
+layout: default
+title: The definitive guide to installing Spacemacs on Windows
+---
+
+<p>
+This post is intended to be the definitive guide for those wishing to install
+Spacemacs on Microsoft Windows. It describes both a native Windows installation,
+with XEmacs built for Windows using MinGW and installation using the Windows
+Subsystem for Linux.
+</p>
+
+<p>
+That all said, I found the native Windows installation of Spacemacs to be
+problematic. Spacemacs behaviour of constantly executing sub-processes such as
+Git and GnuPG caused alot of freezes, possibly due to the Corporate Firewall
+between me and the internet. So while, I do describe it below in case others
+have a different experience to myself and find it useful, I can't recommend it.
+</p>
+
+<p>
+Although the installation of Spacemacs on the Window Subsystem for Linux is
+definitely longer, I found that in end the it was far faster and more stable
+compared to the native install, I would recommend it.
+</p>
+
+<p>
+<b><b>TLDR</b></b>: Skip to <a href="#org74de973">Spacemacs on the Windows Subsystem for Linux (WSL)</a>, as it is
+more than likely what you want.
+</p>
+
+
+<div class="figure">
+<p><img src="../../../images/spacemacs-install/spacemacs.png" alt="spacemacs.png" />
+</p>
+</div>
+
+<div id="outline-container-org9e846d0" class="outline-2">
+<h2 id="org9e846d0">Spacemacs on Native (X)Emacs</h2>
+<div class="outline-text-2" id="text-org9e846d0">
+<p>
+To natively install Spacesmacs on Windows do the following:
+</p>
+
+<ol class="org-ol">
+<li>Download and install the latest <a href="https://sourceforge.net/projects/emacsbinw64/">unoffical 64bit build of XEmacs from
+Sourceforge</a> by Chris Zheng. This unofficial build is both a native Windows
+64bit build and is generally a much more recent release compared to the
+official builds from GNU. Spacemacs needs a recent build, so go grab and
+install a <a href="https://github.com/zklhp/emacs-w64/releases">26.x.x pre-release.</a></li>
+<li>Install <a href="https://gnupg.org/download/">GnuPG</a> and <a href="https://git-scm.com/download/win"> Git for Windows</a>, then ensure that both of these are in
+your Windows <code>%PATH%</code> environmental variable.</li>
+<li>In order for XEmacs to find Spacemacs you will need to create a new Windows
+environmental variable called <code>%HOME%</code> and point it to somewhere sensible,
+such as your <code>%HOMEPATH%</code>, i.e. <code>`C:\Users\&lt;somebody&gt;\`</code>.</li>
+<li><p>
+Now <code>git clone</code> Spacemacs in <code>%HOME%</code>, from the <a href="https://github.com/syl20bnr/spacemacs">SpaceMacs Github</a>
+</p>
+<pre class="example">
+$ git clone https://github.com/syl20bnr/spacemacs
+</pre></li>
+<li><p>
+To add Powerline support, <i>git clone</i> Patched fonts for Powerline Users in
+%HOME%, from the <a href="https://github.com/powerline/fonts">Powerline Github</a> and install them with the provided
+Powershell script.
+</p>
+<pre class="example">
+$ git clone https://github.com/powerline/fonts
+$ cd fonts
+$ ./install.ps1
+</pre></li>
+<li>Start XEmacs from the Windows Start Menu, and wait for all the Spacemacs
+<a href="https://melpa.org/#/">MELPA</a> packages to install.</li>
+<li><p>
+Once complete, open the newly create <code>.spacemacs</code> file in <code>%HOME%</code> and edit
+the entry <code>dotspacemacs-default-font</code> to point to one of the Powerline fonts
+you installed earlier.
+</p>
+<pre class="example">
+dotspacemacs-default-font '("Cousine for Powerline"
+                            :size 16
+                            :weight normal
+                            :width normal
+                            :powerline-scale 1.1)
+</pre></li>
+<li>Restart XEmacs and your done, enjoy Spacemacs!</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org74de973" class="outline-2">
+<h2 id="org74de973">Spacemacs on the Windows Subsystem for Linux (WSL)</h2>
+<div class="outline-text-2" id="text-org74de973">
+<ol class="org-ol">
+<li>First, install the Microsoft Windows Subsystem for Linux (WSL). This process
+is already exhaustively documented by Microsoft, see <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Windows Subsystem for
+Linux Installation Guide for Windows 10.</a></li>
+<li><p>
+The default Emacs build that comes with WSL doesn't support (X)Windows, and
+is pretty old, currently 24.5.1 on my system. To fix this add Kevin Kelley's
+builds of Emacs 26.x.x with XWindows supports, simply by adding Kevin's PPA
+to WSL.
+</p>
+<pre class="example">
+$ apt update &amp;&amp; apt upgrade
+$ add-apt-repository ppa:kelleyk/emacs
+$ apt update
+$ apt install emacs26
+</pre></li>
+<li>On Windows, download and install the <a href="http://www.straightrunning.com/XmingNotes/">XMing XServer</a> (Xming-x64) and the
+associated <a href="http://www.straightrunning.com/XmingNotes/">XMing Fonts Package</a> (Xming-fonts). <b><b>You will need both the
+XMing XServer and Fonts packages installed</b></b>.</li>
+<li><p>
+To add Powerline support, in WSL <code>git clone</code> Patched fonts for Powerline
+Users, from the <a href="https://github.com/powerline/fonts">Powerline Github</a>. Then collect all the true-type fonts and
+put them somewhere sensible XMing can find them. such as your <code>%HOMEPATH%</code>,
+i.e. <code>`C:\Users\&lt;somebody&gt;\`</code>. 
+</p>
+<pre class="example">
+$ git clone https://github.com/powerline/fonts
+$ mkdir -p /mnt/C/Users/&lt;somebody&gt;/fonts
+$ find fonts -name "*.ttf"  -exec cp '{}' /mnt/C/Users/&lt;somebody&gt;/fonts \;
+</pre></li>
+<li><p>
+You now need to scale and index the fonts for XMing. In the WSL terminal:
+</p>
+<pre class="example">
+$ mkfontscale /mnt/C/Users/&lt;somebody&gt;/fonts
+$ mkfontscale -b -s -l /mnt/C/Users/&lt;somebody&gt;/fonts
+</pre></li>
+<li><p>
+Finally, add the Xming-fonts and the Powerline fonts to the XMing font search
+path, edit the <b><b>XMing</b></b> shortcut in Windows, and add a <code>fp</code> (fontpath)
+argument pointing to both the installed XMing and the Powerline fonts.
+</p>
+<pre class="example">
+"C:\Program Files (x86)\Xming\Xming.exe" :0 -fp "C:\Program Files
+(x86)\Xming\fonts\TTF,C:\Program Files (x86)\Xming\fonts\misc,C:\Program Files
+(x86)\Xming\fonts\75dpi,C:\Users\&lt;somebody&gt;\fonts\TTF" -clipboard -multiwindow
+</pre></li>
+<li>Start XMing from the Windows Start Menu, you can add this to your Windows
+Startup folder later for convenience, and confirm that XMing is running in
+the System Tray.</li>
+<li><p>
+In the WSL terminal, export the <code>DISPLAY</code> variable and start Emacs, and wait
+for all the Spacemacs <a href="https://melpa.org/#/">MELPA</a> packages to install:
+</p>
+<pre class="example">
+export DISPLAY=:0.0
+emacs26 &amp;
+</pre></li>
+<li><p>
+Once complete, open the newly create <code>.spacemacs</code> file in <code>%HOME%</code> and edit
+the entry dotspacemacs-default-font to point to one of the Powerline fonts
+you installed earlier.
+</p>
+<pre class="example">
+dotspacemacs-default-font '("Cousine for Powerline"
+                           :size 16
+                           :weight normal
+                           :width normal
+                           :powerline-scale 1.1)
+</pre></li>
+<li>Restart Emacs and your done, enjoy Spacemacs!</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orge7d6526" class="outline-2">
+<h2 id="orge7d6526">References</h2>
+<div class="outline-text-2" id="text-orge7d6526">
+<ul class="org-ul">
+<li><a href="https://github.com/syl20bnr/spacemacs/tree/master/doc">Spacemacs Documentation</a></li>
+<li><a href="http://www.straightrunning.com/XmingNotes/trouble.php">XMing Installation Notes</a></li>
+<li><a href="http://cjkinni.com/installing-fonts-in-xming-with-the-linux-subsystem-on-windows">Installing XMing Fonts</a></li>
+<li><a href="http://www.straightrunning.com/XmingNotes/fonts.php">Scaling and Indexing XMing Fonts</a></li>
+<li><a href="https://github.com/powerline/fonts">Powerline Fonts</a></li>
+<li><a href="https://gitter.im/syl20bnr/spacemacs">Spacemacs Gitter Channel</a></li>
+</ul>
+</div>
+</div>
