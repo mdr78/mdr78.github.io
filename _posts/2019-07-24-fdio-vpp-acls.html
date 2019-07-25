@@ -1,0 +1,740 @@
+---
+layout: default
+title: Guide to ACLs on FD.io VPP
+---
+
+<p>
+I get asked pretty frequent how it is possible to program Access Control Lists
+(ACLs) in <a href="http://fd.io">FD.io VPP</a>, I thought a comprehensive answer was pretty overdue at this
+point. As is usually the case in FD.io VPP there are is more than one way
+depending on what you are looking to do and your performance expectations.
+</p>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org00f6a8e">Summary (TL;DR)</a></li>
+<li><a href="#org087529f">FD.io VPP ACLs Options</a>
+<ul>
+<li><a href="#org2015fbc">The FD.io VPP ACL Plugin</a></li>
+<li><a href="#org228ff80">FD.io VPP COP</a></li>
+<li><a href="#orgac2b0d8">FD.io VPP Flow</a></li>
+<li><a href="#org04df440">FD.io Classifiers</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<p>
+All performance numbers and examples from this document are reused from the
+<a href="https://docs.fd.io/csit/rls1904/report/">FD.io CSIT v19.04 performance report</a> under the Apache 2 License. All information
+and performance is accurate for <a href="https://git.fd.io/vpp/tag/?h=v19.04">FD.io VPP 19.04</a> release. The sections
+<i>performance</i> &amp; <i>operational data</i> below correlate directly with those sections
+from the FD.io CSIT performance report.
+</p>
+
+<div id="outline-container-org00f6a8e" class="outline-2">
+<h2 id="org00f6a8e">Summary (TL;DR)</h2>
+<div class="outline-text-2" id="text-org00f6a8e">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">Option</td>
+<td class="org-left">Relative Performance</td>
+<td class="org-left">Features &amp; Notes</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="#org2015fbc">The FD.io VPP ACL Plugin</a></td>
+<td class="org-left">Lowest</td>
+<td class="org-left">Match on restricted L2-L4 fields, stateful &amp; stateless</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="#org228ff80">FD.io VPP COP</a></td>
+<td class="org-left">Highest (software only)</td>
+<td class="org-left">Match on Layer 3 IPs, stateless</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="#orgac2b0d8">FD.io VPP Flow</a></td>
+<td class="org-left">Highest (accelerated)</td>
+<td class="org-left">Match on restricted L2-L4 fields, stateless, limited number of flows</td>
+</tr>
+
+<tr>
+<td class="org-left">FD.io Classifiers</td>
+<td class="org-left">TBD</td>
+<td class="org-left">Match on any field in the first 80 bytes, TBD</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<div id="outline-container-org087529f" class="outline-2">
+<h2 id="org087529f">FD.io VPP ACLs Options</h2>
+<div class="outline-text-2" id="text-org087529f">
+</div>
+<div id="outline-container-org2015fbc" class="outline-3">
+<h3 id="org2015fbc">The FD.io VPP ACL Plugin</h3>
+<div class="outline-text-3" id="text-org2015fbc">
+<p>
+The plugin was originally developed as part of FD.io VPP and OpenStack
+integration. The plugin needs to be enabled on specific interfaces. 
+</p>
+</div>
+
+<ul class="org-ul">
+<li><a id="org21d72a3"></a>Supports stateful and stateless ACLs on &#x2026;<br />
+<ul class="org-ul">
+<li><a id="org6b862a1"></a>MACs<br /></li>
+<li><a id="orga239029"></a>IPS<br /></li>
+<li><a id="orgbda4288"></a>UDP Ports<br /></li>
+<li><a id="org6f3e2d4"></a>TCP Ports &amp; Flags<br /></li>
+<li><a id="org05c712e"></a>ICMP Messages<br /></li>
+</ul>
+</li>
+
+<li><a id="org98dc858"></a>Directional<br />
+<ul class="org-ul">
+<li><a id="orgccef062"></a>Input ACLs<br />
+<div class="outline-text-8" id="text-orgccef062">
+<p>
+Run before the IP flow classification.
+</p>
+</div>
+</li>
+<li><a id="org1b6bb7d"></a>Output ACLs<br />
+<div class="outline-text-8" id="text-org1b6bb7d">
+<p>
+Run before interface output.
+</p>
+</div>
+</li>
+</ul>
+</li>
+
+<li><a id="org280fdcf"></a>Actions<br />
+<ul class="org-ul">
+<li><a id="org3e7797e"></a>Permit (stateless)<br /></li>
+<li><a id="org364f863"></a>Drop (stateful)<br /></li>
+<li><a id="org7a8800d"></a>Permit+Reflect (stateful)<br /></li>
+</ul>
+</li>
+
+<li><a id="orgb9ef652"></a>Stateful (sf)<br />
+<ul class="org-ul">
+<li><a id="orgc452f66"></a>Actions: permit+reflect<br /></li>
+<li><a id="org4462186"></a>Most heavily optimized, as are the most common use case.<br /></li>
+<li><a id="orgaf8eb5a"></a>Faster because stateful uses a flow cache, it means the ACL hit is<br />
+<div class="outline-text-8" id="text-orgaf8eb5a">
+<p>
+only taken once, up front for the flow and then becomes just a look-up.
+</p>
+</div>
+</li>
+<li><a id="orgbb45829"></a>Uses more memory, less deterministic as the flow cache makes it more<br />
+<div class="outline-text-8" id="text-orgbb45829">
+<p>
+susceptible to the effects of the memory hierarchy and locality.
+</p>
+</div>
+</li>
+</ul>
+</li>
+
+<li><a id="orga61fad4"></a>Stateless (sl)<br />
+<ul class="org-ul">
+<li><a id="org6901f34"></a>Actions : permit, drop<br /></li>
+<li><a id="org31faa02"></a>Less optimized, less common use case.<br /></li>
+<li><a id="org3a76bda"></a>Slower as there is no flow-cache, every new packet incurs the same<br />
+<div class="outline-text-8" id="text-org3a76bda">
+<p>
+amount ACL processing.
+</p>
+</div>
+</li>
+<li><a id="org8b8a46f"></a>Uses less memory, and are more deterministic (compared to stateful).<br /></li>
+</ul>
+</li>
+</ul>
+
+<li><a id="org5b2c1d1"></a>Operational Data<br />
+<ul class="org-ul">
+<li><a id="org9ecce31"></a>Input/Stateless<br />
+<div class="outline-text-5" id="text-org9ecce31">
+<p>
+Test Case: 10ge2p1x520-ethip4udp-ip4base-iacl1sl-10kflows-ndrpdr
+</p>
+<pre class="example">
+DUT1: 
+Thread 0 vpp_main (lcore 1) 
+Time 3.8, average vectors/node 0.00, last 128 main loops 0.00 per node 0.00 
+  vector rates in 0.0000e0, out 0.0000e0, drop 0.0000e0, punt 0.0000e0 
+             Name                 State         Calls          Vectors        Suspends         Clocks       Vectors/Call   
+acl-plugin-fa-cleaner-process   any wait                 0               0              14          1.29e3            0.00 
+acl-plugin-fa-worker-cleaner-pinterrupt wa               7               0               0          9.18e2            0.00 
+api-rx-from-ring                 active                  0               0              52          8.96e4            0.00 
+dpdk-process                    any wait                 0               0               1          1.35e4            0.00 
+fib-walk                        any wait                 0               0               2          2.69e3            0.00 
+ip6-icmp-neighbor-discovery-ev  any wait                 0               0               4          1.32e3            0.00 
+lisp-retry-service              any wait                 0               0               2          2.90e3            0.00 
+unix-epoll-input                 polling              7037               0               0          1.25e6            0.00 
+vpe-oam-process                 any wait                 0               0               2          2.28e3            0.00 
+
+Thread 1 vpp_wk_0 (lcore 2) 
+Time 3.8, average vectors/node 249.02, last 128 main loops 32.00 per node 273.07 
+  vector rates in 6.1118e6, out 6.1118e6, drop 0.0000e0, punt 0.0000e0 
+             Name                 State         Calls          Vectors        Suspends         Clocks       Vectors/Call   
+TenGigabitEtherneta/0/0-output   active              47106        11721472               0          9.47e0          248.83 
+TenGigabitEtherneta/0/0-tx       active              47106        11721472               0          4.22e1          248.83 
+TenGigabitEtherneta/0/1-output   active              47106        11721472               0          1.02e1          248.83 
+TenGigabitEtherneta/0/1-tx       active              47106        11721472               0          4.18e1          248.83 
+acl-plugin-fa-worker-cleaner-pinterrupt wa               7               0               0          1.39e3            0.00 
+acl-plugin-in-ip4-fa             active              94107        23442944               0          1.75e2          249.11 
+dpdk-input                       polling             47106        23442944               0          4.64e1          497.66 
+ethernet-input                   active              94212        23442944               0          1.55e1          248.83 
+ip4-input-no-checksum            active              94107        23442944               0          3.23e1          249.11 
+ip4-lookup                       active              94107        23442944               0          2.91e1          249.11 
+ip4-rewrite                      active              94107        23442944               0          2.48e1          249.11 
+unix-epoll-input                 polling                46               0               0          1.54e3            0.00
+</pre>
+</div>
+</li>
+<li><a id="orgf8747a4"></a>Input/Stateful<br />
+<div class="outline-text-5" id="text-orgf8747a4">
+<p>
+Test Case: 64b-1t1c-ethip4udp-ip4base-iacl1sf-10kflows-ndrpdr
+</p>
+<pre class="example">
+DUT1: 
+Thread 0 vpp_main (lcore 1) 
+Time 3.9, average vectors/node 0.00, last 128 main loops 0.00 per node 0.00 
+  vector rates in 0.0000e0, out 0.0000e0, drop 0.0000e0, punt 0.0000e0 
+             Name                 State         Calls          Vectors        Suspends         Clocks       Vectors/Call   
+acl-plugin-fa-cleaner-process   any wait                 0               0              16          1.40e3            0.00 
+acl-plugin-fa-worker-cleaner-pinterrupt wa               8               0               0          8.97e2            0.00 
+api-rx-from-ring                 active                  0               0              52          7.12e4            0.00 
+dpdk-process                    any wait                 0               0               1          1.69e4            0.00 
+fib-walk                        any wait                 0               0               2          2.55e3            0.00 
+ip4-reassembly-expire-walk      any wait                 0               0               1          1.27e4            0.00 
+ip6-icmp-neighbor-discovery-ev  any wait                 0               0               4          1.09e3            0.00 
+ip6-reassembly-expire-walk      any wait                 0               0               1          2.57e3            0.00 
+lisp-retry-service              any wait                 0               0               2          1.18e4            0.00 
+statseg-collector-process       time wait                0               0               1          6.38e3            0.00 
+unix-epoll-input                 polling              6320               0               0          1.41e6            0.00 
+vpe-oam-process                 any wait                 0               0               2          7.53e3            0.00 
+
+Thread 1 vpp_wk_0 (lcore 2) 
+Time 3.9, average vectors/node 252.74, last 128 main loops 32.00 per node 273.07 
+  vector rates in 7.5833e6, out 7.5833e6, drop 0.0000e0, punt 0.0000e0 
+             Name                 State         Calls          Vectors        Suspends         Clocks       Vectors/Call   
+TenGigabitEtherneta/0/0-output   active              58325        14738944               0          9.41e0          252.70 
+TenGigabitEtherneta/0/0-tx       active              58325        14738944               0          4.32e1          252.70 
+TenGigabitEtherneta/0/1-output   active              58323        14738944               0          1.02e1          252.71 
+TenGigabitEtherneta/0/1-tx       active              58323        14738944               0          4.31e1          252.71 
+acl-plugin-fa-worker-cleaner-pinterrupt wa               8               0               0          1.62e3            0.00 
+acl-plugin-in-ip4-fa             active             116628        29477888               0          1.01e2          252.75 
+dpdk-input                       polling             58325        29477888               0          4.63e1          505.41 
+ethernet-input                   active             116648        29477888               0          1.53e1          252.71 
+ip4-input-no-checksum            active             116628        29477888               0          3.21e1          252.75 
+ip4-lookup                       active             116628        29477888               0          2.90e1          252.75 
+ip4-rewrite                      active             116628        29477888               0          2.48e1          252.75 
+unix-epoll-input                 polling                57               0               0          2.39e3            0.00  
+</pre>
+</div>
+</li>
+<li><a id="orga228d78"></a>Output/Stateless<br />
+<div class="outline-text-5" id="text-orga228d78">
+<p>
+Test Case: 64b-1t1c-ethip4udp-ip4base-oacl10sl-10kflows-ndrpdr
+</p>
+<pre class="example">
+DUT1: 
+ Thread 0 vpp_main (lcore 1) 
+ Time 3.8, average vectors/node 0.00, last 128 main loops 0.00 per node 0.00 
+   vector rates in 0.0000e0, out 0.0000e0, drop 0.0000e0, punt 0.0000e0 
+              Name                 State         Calls          Vectors        Suspends         Clocks       Vectors/Call   
+ acl-plugin-fa-cleaner-process   any wait                 0               0              14          1.43e3            0.00 
+ acl-plugin-fa-worker-cleaner-pinterrupt wa               7               0               0          9.23e2            0.00 
+ api-rx-from-ring                 active                  0               0              52          8.01e4            0.00 
+ dpdk-process                    any wait                 0               0               1          1.59e6            0.00 
+ fib-walk                        any wait                 0               0               2          6.81e3            0.00 
+ ip6-icmp-neighbor-discovery-ev  any wait                 0               0               4          2.81e3            0.00 
+ lisp-retry-service              any wait                 0               0               2          3.64e3            0.00 
+ unix-epoll-input                 polling              4842               0               0          1.81e6            0.00 
+ vpe-oam-process                 any wait                 0               0               1          2.24e4            0.00 
+  
+ Thread 1 vpp_wk_0 (lcore 2) 
+ Time 3.8, average vectors/node 249.29, last 128 main loops 36.00 per node 271.06 
+   vector rates in 5.9196e6, out 5.9196e6, drop 0.0000e0, punt 0.0000e0 
+              Name                 State         Calls          Vectors        Suspends         Clocks       Vectors/Call   
+ TenGigabitEtherneta/0/0-output   active              45595        11363584               0          9.22e0          249.23 
+ TenGigabitEtherneta/0/0-tx       active              45595        11363584               0          4.25e1          249.23 
+ TenGigabitEtherneta/0/1-output   active              45594        11363584               0          9.75e0          249.23 
+ TenGigabitEtherneta/0/1-tx       active              45594        11363584               0          4.21e1          249.23 
+ acl-plugin-fa-worker-cleaner-pinterrupt wa               7               0               0          1.28e3            0.00 
+ acl-plugin-out-ip4-fa            active              91155        22727168               0          1.78e2          249.32 
+ dpdk-input                       polling             45595        22727168               0          4.64e1          498.46 
+ ethernet-input                   active              91189        22727168               0          1.56e1          249.23 
+ interface-output                 active              91155        22727168               0          1.13e1          249.32 
+ ip4-input-no-checksum            active              91155        22727168               0          1.95e1          249.32 
+ ip4-lookup                       active              91155        22727168               0          2.88e1          249.32 
+ ip4-rewrite                      active              91155        22727168               0          3.53e1          249.32 
+ unix-epoll-input                 polling                44               0               0          1.53e3            0.00 
+</pre>
+</div>
+</li>
+<li><a id="org0eecedd"></a>Output/Stateful<br />
+<div class="outline-text-5" id="text-org0eecedd">
+<p>
+Test Case: 64b-1t1c-ethip4udp-ip4base-oacl10sf-10kflows-ndrpdr
+</p>
+<pre class="example">
+DUT1: 
+ Thread 0 vpp_main (lcore 1) 
+ Time 3.8, average vectors/node 0.00, last 128 main loops 0.00 per node 0.00 
+   vector rates in 0.0000e0, out 0.0000e0, drop 0.0000e0, punt 0.0000e0 
+              Name                 State         Calls          Vectors        Suspends         Clocks       Vectors/Call   
+ acl-plugin-fa-cleaner-process   any wait                 0               0              16          1.47e3            0.00 
+ acl-plugin-fa-worker-cleaner-pinterrupt wa               8               0               0          8.51e2            0.00 
+ api-rx-from-ring                 active                  0               0              50          7.24e4            0.00 
+ dpdk-process                    any wait                 0               0               2          1.93e4            0.00 
+ fib-walk                        any wait                 0               0               2          2.02e3            0.00 
+ ip4-reassembly-expire-walk      any wait                 0               0               1          3.96e3            0.00 
+ ip6-icmp-neighbor-discovery-ev  any wait                 0               0               4          9.84e2            0.00 
+ ip6-reassembly-expire-walk      any wait                 0               0               1          3.76e3            0.00 
+ lisp-retry-service              any wait                 0               0               2          1.49e4            0.00 
+ statseg-collector-process       time wait                0               0               1          4.98e3            0.00 
+ unix-epoll-input                 polling              5653               0               0          1.55e6            0.00 
+ vpe-oam-process                 any wait                 0               0               2          1.90e3            0.00 
+  
+ Thread 1 vpp_wk_0 (lcore 2) 
+ Time 3.8, average vectors/node 250.85, last 128 main loops 36.00 per node 271.06 
+   vector rates in 7.2686e6, out 7.2686e6, drop 0.0000e0, punt 0.0000e0 
+              Name                 State         Calls          Vectors        Suspends         Clocks       Vectors/Call   
+ TenGigabitEtherneta/0/0-output   active              55639        13930752               0          9.33e0          250.38 
+ TenGigabitEtherneta/0/0-tx       active              55639        13930752               0          4.27e1          250.38 
+ TenGigabitEtherneta/0/1-output   active              55636        13930758               0          9.81e0          250.39 
+ TenGigabitEtherneta/0/1-tx       active              55636        13930758               0          4.33e1          250.39 
+ acl-plugin-fa-worker-cleaner-pinterrupt wa               8               0               0          1.62e3            0.00 
+ acl-plugin-out-ip4-fa            active             110988        27861510               0          1.04e2          251.03 
+ dpdk-input                       polling             55639        27861510               0          4.62e1          500.76 
+ ethernet-input                   active             111275        27861510               0          1.55e1          250.38 
+ interface-output                 active             110988        27861510               0          1.21e1          251.03 
+ ip4-input-no-checksum            active             110988        27861510               0          1.95e1          251.03 
+ ip4-lookup                       active             110988        27861510               0          2.89e1          251.03 
+ ip4-rewrite                      active             110988        27861510               0          3.55e1          251.03 
+ unix-epoll-input                 polling                54               0               0          2.43e3            0.00  
+</pre>
+</div>
+</li>
+</ul>
+</li>
+<li><a id="org49bb639"></a>Performance<br />
+<div class="outline-text-4" id="text-org49bb639">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">Test Case</td>
+<td class="org-right">MPPS</td>
+<td class="org-right">Cycles per packet</td>
+</tr>
+
+<tr>
+<td class="org-left">ethip4-ip4base</td>
+<td class="org-right">18.26</td>
+<td class="org-right">136</td>
+</tr>
+
+<tr>
+<td class="org-left">ethip4ip4udp-ip4base-iacl1sl-10kflows</td>
+<td class="org-right">9.134</td>
+<td class="org-right">273</td>
+</tr>
+
+<tr>
+<td class="org-left">ethip4ip4udp-ip4base-iacl1sf-10kflows</td>
+<td class="org-right">11.06</td>
+<td class="org-right">226</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<ul class="org-ul">
+<li><a id="org078d81f"></a>Input ACLS (SKX)<br />
+<div class="outline-text-5" id="text-org078d81f">
+
+<div class="figure">
+<p><img src="../../../images/acls/64b-2t1c-features-iacl.png" alt="64b-2t1c-features-iacl.png" />
+</p>
+</div>
+</div>
+</li>
+
+<li><a id="orge0edec0"></a>Output ACLs (HSW)<br />
+<div class="outline-text-5" id="text-orge0edec0">
+
+<div class="figure">
+<p><img src="../../../images/acls/64b-1t1c-features-oacl.png" alt="64b-1t1c-features-oacl.png" />
+</p>
+</div>
+</div>
+</li>
+</ul>
+</li>
+
+<li><a id="org7157e9a"></a>Configuration<br />
+<div class="outline-text-4" id="text-org7157e9a">
+<ul class="org-ul">
+<li><p>
+Stateful
+</p>
+<pre class="example">
+ip_add_del_route 20.20.20.0/24 via 1.1.1.2  sw_if_index 1 resolve-attempts 10 count 1     
+acl_add_replace  ipv4 permit src 30.30.30.1/32 dst 40.40.40.1/32 sport 1000 dport 1000, ipv4 permit+reflect src 10.10.10.0/24, ipv4 permit+reflect src 20.20.20.0/24        
+acl_interface_set_acl_list sw_if_index 2 input 0 
+acl_interface_set_acl_list sw_if_index 1 input 0 
+</pre></li>
+<li><p>
+Stateless
+</p>
+<pre class="example">
+ip_add_del_route 20.20.20.0/24 via 1.1.1.2  sw_if_index 1 resolve-attempts 10 count 1     
+acl_add_replace  ipv4 permit src 30.30.30.1/32 dst 40.40.40.1/32 sport 1000 dport 1000, ipv4 permit src 10.10.10.0/24, ipv4 permit src 20.20.20.0/24        
+acl_interface_set_acl_list sw_if_index 2 input 0 
+acl_interface_set_acl_list sw_if_index 1 input 0
+</pre></li>
+</ul>
+</div>
+</li>
+
+<li><a id="org8fb8471"></a>Links<br />
+<ul class="org-ul">
+<li><a id="org6d44a66"></a><a href="https://wiki.fd.io/view/VPP/SecurityGroups">FD.io Security Groups overview</a><br /></li>
+<li><a id="org3da64a4"></a><a href="https://packetlife.net/blog/2008/nov/25/reflexive-access-lists/">Reflexive Access Control Lists</a><br /></li>
+<li><a id="orgaeb93fc"></a><a href="http://stdio.be/blog/2017-12-09-Debugging-VPP-MACIP-ACLs/">Andrew Yuort's Blog on ACLs</a><br /></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org228ff80" class="outline-3">
+<h3 id="org228ff80">FD.io VPP COP</h3>
+<div class="outline-text-3" id="text-org228ff80">
+<p>
+IPv4/IPv6 white-lists using the FD.io VPP FIB, with support for multiple
+nested white-lists. These form of white-listing is called COP in FD.io VPP,
+for reasons I can't remember. COP needs to be enabled on specific interfaces.
+</p>
+
+<p>
+Design notes:
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="orge726f92"></a>The cop graph nodes (input &amp; white-list) make reuse of the FD.io VPP FIB<br />
+<div class="outline-text-5" id="text-orge726f92">
+<p>
+2.0 implementation. Essentially a successful lookup in the FIB, indicates
+that a packet has been white-listed and may be forwarded.
+</p>
+</div>
+</li>
+<li><a id="org8d4ac5b"></a>cop-input: Determines if the frame is IPv4 or IPv6, and forwards to<br />
+<div class="outline-text-5" id="text-org8d4ac5b">
+<p>
+ipN-copwhitelist graph node.
+</p>
+</div>
+</li>
+<li><a id="orge86b15c"></a>ipN-copwhitelist: uses the ip4_fib_[mtrie,lookup] functions to confirm the<br />
+<div class="outline-text-5" id="text-orge86b15c">
+<p>
+packet's ip matches a route in the white-list fib.
+</p>
+</div>
+<ul class="org-ul">
+<li><a id="org3f0f5ad"></a>Match: if it matches, it is then either sent to the next whitelist or to<br />
+<div class="outline-text-6" id="text-org3f0f5ad">
+<p>
+the ip layer.
+</p>
+</div>
+</li>
+<li><a id="org247682f"></a>No Match: if it there is not match, it is sent to error-drop.<br /></li>
+</ul>
+</li>
+</ul>
+
+<li><a id="orgd34d348"></a>Operational Data<br />
+<div class="outline-text-4" id="text-orgd34d348">
+<p>
+Note: the double-pass of the ip4-lookup and ip4-rewrite.
+</p>
+<pre class="example">
+DUT1: 
+ Thread 0 vpp_main (lcore 1) 
+ Time 3.9, average vectors/node 0.00, last 128 main loops 0.00 per node 0.00 
+   vector rates in 0.0000e0, out 0.0000e0, drop 0.0000e0, punt 0.0000e0 
+              Name                 State         Calls          Vectors        Suspends         Clocks       Vectors/Call   
+ api-rx-from-ring                 active                  0               0              53          4.20e4            0.00 
+ dpdk-process                    any wait                 0               0               1          1.75e4            0.00 
+ fib-walk                        any wait                 0               0               2          1.59e3            0.00 
+ ip4-reassembly-expire-walk      any wait                 0               0               1          2.20e3            0.00 
+ ip6-icmp-neighbor-discovery-ev  any wait                 0               0               4          1.14e3            0.00 
+ ip6-reassembly-expire-walk      any wait                 0               0               1          1.50e3            0.00 
+ lisp-retry-service              any wait                 0               0               2          2.19e3            0.00 
+ statseg-collector-process       time wait                0               0               1          2.48e3            0.00 
+ unix-epoll-input                 polling              2800               0               0          3.15e6            0.00 
+ vpe-oam-process                 any wait                 0               0               2          7.00e2            0.00 
+
+ Thread 1 vpp_wk_0 (lcore 2) 
+ Time 3.9, average vectors/node 220.84, last 128 main loops 20.87 per node 190.86 
+   vector rates in 1.0724e7, out 1.0724e7, drop 0.0000e0, punt 0.0000e0 
+              Name                 State         Calls          Vectors        Suspends         Clocks       Vectors/Call   
+ TenGigabitEtherneta/0/0-output   active              94960        20698112               0          1.03e1          217.97 
+ TenGigabitEtherneta/0/0-tx       active              94960        20698112               0          3.97e1          217.97 
+ TenGigabitEtherneta/0/1-output   active              92238        20698112               0          9.92e0          224.39 
+ TenGigabitEtherneta/0/1-tx       active              92238        20698112               0          4.26e1          224.39 
+ cop-input                        active              94960        20698112               0          1.98e1          217.97 
+ dpdk-input                       polling             95154        41396224               0          4.58e1          435.04 
+ ethernet-input                   active              92238        20698112               0          1.59e1          224.39 
+ ip4-cop-whitelist                active              94960        20698112               0          3.24e1          217.97 
+ ip4-input                        active              94960        20698112               0          3.13e1          217.97 
+ ip4-input-no-checksum            active              92238        20698112               0          2.23e1          224.39 
+ ip4-lookup                       active             187198        41396224               0          3.08e1          221.14 
+ ip4-rewrite                      active             187198        41396224               0          2.47e1          221.14 
+ unix-epoll-input                 polling                93               0               0          1.35e3            0.00 
+</pre>
+</div>
+</li>
+<li><a id="org4f662d4"></a>Performance<br />
+<div class="outline-text-4" id="text-org4f662d4">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">Test Case</td>
+<td class="org-right">MPPS</td>
+<td class="org-right">Cycles per packet</td>
+</tr>
+
+<tr>
+<td class="org-left">ethip4-ip4base</td>
+<td class="org-right">18.81</td>
+<td class="org-right">132</td>
+</tr>
+
+<tr>
+<td class="org-left">ethip4-ip4base-copwhtlistbase</td>
+<td class="org-right">15.12</td>
+<td class="org-right">165</td>
+</tr>
+</tbody>
+</table>
+
+
+<div class="figure">
+<p><img src="../../../images/acls/ip4-3n-skx-x710-64b-2t1c-features-ndr.png" alt="ip4-3n-skx-x710-64b-2t1c-features-ndr.png" />
+</p>
+</div>
+</div>
+</li>
+
+<li><a id="org6aa6541"></a>Configuration<br />
+<div class="outline-text-4" id="text-org6aa6541">
+<p>
+Note: a new VRF 1 is created which holds the whitelist, which then applied to
+the interface 1.
+</p>
+<pre class="example">
+ip_add_del_route 10.10.10.0/24 via 1.1.1.1  sw_if_index 2 resolve-attempts 10 count 1     
+ip_table_add_del table 1  
+ip_add_del_route 20.20.20.0/24  vrf 1  resolve-attempts 10 count 1    local 
+cop_whitelist_enable_disable sw_if_index 1 ip4 fib-id 1 
+cop_interface_enable_disable sw_if_index 1  
+</pre>
+</div>
+</li>
+
+<li><a id="orgcea7ebb"></a>Links<br />
+<ul class="org-ul">
+<li><a id="orgfb28a0b"></a><a href="https://wiki.fd.io/images/7/71/FIB_2.0_-_Hierarchical,_Protocol_Independent..pdf">FIB	2.0:	Hierarchical,	Protocol	Independent.</a><br /></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-orgac2b0d8" class="outline-3">
+<h3 id="orgac2b0d8">FD.io VPP Flow</h3>
+<div class="outline-text-3" id="text-orgac2b0d8">
+<p>
+FD.io VPP Flow adds the ability for FD.io VPP to support matching of flows and
+taking an associated action. This information is then used to program hardware
+accelerations such as those available on network cards, e.g. Intel® Ethernet
+Flow Director technology on the Intel® Ethernet Controller X710/XXV710/XL710.
+</p>
+</div>
+
+<ul class="org-ul">
+<li><a id="org5955849"></a>Supports<br />
+<ul class="org-ul">
+<li><a id="orgb5ad238"></a>Actions<br />
+<ul class="org-ul">
+<li><a id="org78766f7"></a>Count: don't now what this does, presume it count's matches.<br /></li>
+<li><a id="org92cd820"></a>Mark: Associate a matched flow with arbitrary data such as vxlan tunnel,<br />
+<div class="outline-text-8" id="text-org92cd820">
+<p>
+for a lookup in the redirect graph node.
+</p>
+</div>
+</li>
+<li><a id="org19c6d2b"></a>Buffer Advance: Can be used advance to an encapsulated ethernet or ip<br />
+<div class="outline-text-8" id="text-org19c6d2b">
+<p>
+header.
+</p>
+</div>
+</li>
+<li><a id="org1e6e362"></a>Redirect to node: When you see a packet from flow xyz, the next node in<br />
+<div class="outline-text-8" id="text-org1e6e362">
+<p>
+FD.io VPP is the indicated graph node. 
+</p>
+</div>
+</li>
+<li><a id="org84e0f5e"></a>Redirect to queue: When you see a packet from flow xyz, is to redirect<br />
+<div class="outline-text-8" id="text-org84e0f5e">
+<p>
+to rx queue n.
+</p>
+</div>
+</li>
+<li><a id="org5134922"></a>Drop: When you see a packet from flow xyz, drop the packet (next node is<br />
+<div class="outline-text-8" id="text-org5134922">
+<p>
+error drop).
+</p>
+
+<p>
+Design Notes:
+</p>
+</div>
+</li>
+</ul>
+</li>
+<li><a id="org806b77a"></a>Currently the only place in FD.io VPP that this is used, is to accelerate<br />
+<div class="outline-text-6" id="text-org806b77a">
+<p>
+VXLAN bypassing the Ethernet and IP Layers.
+</p>
+</div>
+</li>
+
+<li><a id="org3adeda4"></a>Flow uses DPDK rte_flow API under the hood for those network interfaces<br />
+<div class="outline-text-6" id="text-org3adeda4">
+<p>
+programmed through DPDK.
+</p>
+</div>
+</li>
+
+<li><a id="orgef21da0"></a>Redirect to node: worth remember that if you are bypassing a graph, you<br />
+<div class="outline-text-6" id="text-orgef21da0">
+<p>
+are bypassing all the checks in the graph node, e.e time-to-live, crcs and
+the like.
+</p>
+</div>
+</li>
+</ul>
+</li>
+
+<li><a id="org11f392c"></a>Operational Data<br />
+<div class="outline-text-4" id="text-org11f392c">
+<p>
+FD.io CSIT numbers for VXLan do not use FD.io Flow support.
+</p>
+</div>
+</li>
+<li><a id="orgdc4b0cd"></a>Performance<br />
+<div class="outline-text-4" id="text-orgdc4b0cd">
+<p>
+FD.io CSIT numbers for VXLan do not use FD.io Flow support. 
+</p>
+</div>
+</li>
+<li><a id="orgfc2350a"></a>Configuration<br />
+<ul class="org-ul">
+<li><a id="org1f76af1"></a><a href="https://git.fd.io/vpp/tree/src/vnet/flow/flow.h">Flow API</a><br /></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org04df440" class="outline-3">
+<h3 id="org04df440">FD.io Classifiers</h3>
+<div class="outline-text-3" id="text-org04df440">
+<p>
+The most flexible form of ACLs in FD.io VPP. 
+</p>
+</div>
+
+<ul class="org-ul">
+<li><a id="org63f30b4"></a>Configuration<br />
+<div class="outline-text-4" id="text-org63f30b4">
+<p>
+Match an IPv6&#x2026;.
+</p>
+
+<pre class="example">
+classify table mask l3 ip6 dst buckets 64
+classify session hit-next 0 table-index 0 match l3 ip6 dst 2001:db8:1::2 opaque-index 42
+set interface l2 input classify intfc host-s0_s1 ip6-table 0
+</pre>
+</div>
+</li>
+
+<li><a id="org81d8649"></a>Links<br />
+<ul class="org-ul">
+<li><a id="orgb31c9e9"></a><a href="https://wiki.fd.io/view/VPP/SecurityGroups#Existing_functionality">Overview of classifers</a><br /></li>
+<li><a id="orgf6b1756"></a><a href="https://wiki.fd.io/view/VPP/Introduction_To_N-tuple_Classifiers">FD.io VPP Classifiers Overview</a><br /></li>
+<li><a id="org6b7987b"></a><a href="https://docs.fd.io/vpp/19.04/clicmd_src_vnet_classify.html">FD.io VPP Classifiers CLI</a><br /></li>
+<li><a id="orgec6b9c4"></a><a href="http://stdio.be/vpp/t/aytest-bridge-tap-py.txt">Sample Code from Andrew Yourt</a><br /></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
