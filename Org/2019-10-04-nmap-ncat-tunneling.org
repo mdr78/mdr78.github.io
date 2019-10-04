@@ -1,0 +1,33 @@
+#+STARTUP: showall indentX
+#+STARTUP: hidestars
+#+OPTIONS: H:2 num:nil tags:nil toc:nil timestamps:nil
+#+BEGIN_EXPORT html
+---
+layout: default
+title: Tunnelling through SOCKS 5 Proxy on Fedora 30 and above
+---
+#+END_EXPORT
+
+Consistent with the laws of un-intended consequences, when I upgraded to Fedora
+30 to play with the new versions of CLang and GCC, something broke git.
+
+More precisely, netcat which I use to traverse our corporate firewall, kept
+failing with /"Ncat: Network is unreachable"/. The network /is/ reachable, whats
+the problem?
+
+On closer inspection I found that the venerable [[https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/MJOCCQGUY7PYL3G42JJA6JKRLMQ2YXBN/][nc had been silently replaced by
+nmap ncat]]. Although their executable names are the same, they are not completely
+compatible.
+
+With nc you would have configured your .ssh/config for a SOCKS 5 proxy as
+follows.
+#+begin_src
+Host gerrit.fd.io
+    ProxyCommand nc -x proxy.corporate.com:5000 %h %p
+#+end_src
+
+These should now be re-configured as follows.
+#+begin_src
+Host gerrit.fd.io
+    ProxyCommand nc --proxy proxy.corporate.com:5000 --proxy-type socks5 %h %p
+#+end_src
