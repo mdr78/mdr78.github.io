@@ -4,7 +4,7 @@
 #+BEGIN_EXPORT html
 ---
 layout: default
-title: Tunnelling through SOCKS 5 Proxy on Fedora 30 and above
+title: SSL Tunnelling with nmap-ncat on Fedora 30
 ---
 #+END_EXPORT
 
@@ -12,12 +12,12 @@ Consistent with the laws of un-intended consequences, when I upgraded to Fedora
 30 to play with the new versions of CLang and GCC, something broke git.
 
 More precisely, netcat which I use to traverse our corporate firewall, kept
-failing with /"Ncat: Network is unreachable"/. The network /is/ reachable, whats
-the problem?
+failing with /"Ncat: Network is unreachable"/. The network /is/ reachable,
+through the proxy, so whats the problem?
 
 On closer inspection I found that the venerable [[https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/MJOCCQGUY7PYL3G42JJA6JKRLMQ2YXBN/][nc had been silently replaced by
 nmap ncat]]. Although their executable names are the same, they are not completely
-compatible.
+command line compatible.
 
 With nc you would have configured your .ssh/config for a SOCKS 5 proxy as
 follows.
