@@ -1,0 +1,98 @@
+#+STARTUP: showall indentX
+#+STARTUP: hidestars
+#+OPTIONS: num:nil tags:nil toc:nil timestamps:nil
+#+BEGIN_EXPORT html
+---
+layout: default
+title: FOSDEM 2020 Software Defined Networking Devroom CFP
+---
+#+END_EXPORT
+
+We are pleased to announce the Call for Participation for the FOSDEM 2020
+Software Defined Networking devroom!
+
+Important dates:
+
+| Nov 24th 2019 | Submission deadline for talk proposals |
+| Dec 15th 2019 | Announcement of the final schedule     |
+| Feb 1st 2019  | Software Defined Networking devroom    |
+
+Talks covering any projects or technologies within the networking domain are
+welcome, with the only condition being that the project or technology must be
+free and open source. Software Defined Networking continues to be an exciting
+and growing field and FOSDEM gives an opportunity to reach a large audience of
+knowledgeable, highly technical, free and open source software activists.
+
+** Topics:
+
+This year the devroom topics will include the following fields.
+
+| Domain         | IoT, Cloud, Enterprise, Service Provider, Wireless and Cellular.                         |
+| Physical       | low power, mesh, high throughput, low latency, optical, wireless                         |
+| Infrastructure | switching, routing, load balancing, translation, authentic, crypto, detection, intercept |
+| Tooling        | libraries, frameworks, tracing, debugging, domain specific languages and extensions.     |
+| Telemetry      | counters & statistics, interference, analysis, automation.                               |
+| Validation     | performance, latency, packet manipulation & fuzzing, traffic generators.                 |
+| Orchestration  | management, network-layer plugins and controllers.                                       |
+
+This year the devroom will focus on cloud infrastructure, and the challenges of
+scaling and resiliency posed by cloud deployments - what does it take to build a
+fast and robust cloud native network? What does this mean in the age of
+edge cloud?
+
+** Suggested Projects:
+
+A non-exhaustive representative list of the projects and topics we would like to
+see on the schedule are:
+
+| Frameworks  | DPDK, eBPF, XDP                                                                   |
+| Switching   | Snabb, OpenvSwitch, Tungsten Fabric, Lagopus, FastClick                                    |
+| Stacks      | Linux, *BSD, FD.io, F-Stack, DMM, mTCP, Seastar, YAStack                                   |
+| Controllers | Istio/Envoy, Network Service Mesh, Neutron, CNI, Canal, ODL, ONOS, Plumgrid, OVN, Contrail |
+| Edge        | Akraino, Openness                                                                          |
+| Routing     | FRRouting, BIRD, Netopeer, Go-BGP                                                          |
+| Management  | ONAP, Open-O, ManageIQ, Juju, OpenBaton, Tacker, OSM, Ganglia, NetSNMP, PNDA.io            |
+| Security    | Suricata, Snort, Zeek                                                                      |
+| Tooling     | VSPerf, CSIT, TRex, Moongen, Scapy, Warp17                                                 |
+
+Talks should be aimed at a technical audience, but should not assume that
+attendees are already familiar with your project or how it solves a given
+problem. Talk proposals may cover very specific solutions to a problem, or may
+be a higher level project overview for lesser known projects.
+
+** Proposals:
+
+Proposals should be made through the FOSDEM Pentabarf submission tool. You do
+not need to create a new Pentabarf account if you already have one from a past
+year.
+
+[[https://penta.fosdem.org/submission/FOSDEM20][https://penta.fosdem.org/submission/FOSDEM20]]
+
+Please select the "Software Defined Networking" as the *track* and ensure you
+include the following information when submitting a proposal:
+
+| Section | Field                  | Notes                                                                             |
+|---------+------------------------+-----------------------------------------------------------------------------------|
+| Person  | First/Last/Public Name | Your name.                                                                        |
+| Person  | Abstract               | Short bio.                                                                        |
+| Person  | Photo                  | Please provide a photo.                                                           |
+| Event   | Event Title            | *This is the title of your talk* - please be descriptive to encourage attendance. |
+| Event   | Abstract               | Short abstract of one or two paragraphs.                                          |
+| Event   | Duration               | Please indicate the length of your talk; 15 min, 30 min or 45 min                 |
+
+The deadline for submissions is November 24th, 2019. FOSDEM will be held on the
+weekend of February 1-2, 2020 and the Software Defined Networking devroom will
+take place on Saturday, February 1, 2020. 
+
+Please also join the devroom’s mailing list, which is the official communication
+channel for the devroom:
+
+[[https://lists.fosdem.org/listinfo/network-devroom][network-devroom@lists.fosdem.org]] (subscription page)
+
+** Steering Committee:
+
+Ray Kinsella\\
+Thomas Monjalon\\
+Emma Foley\\
+Chris Price\\
+Charles Eckel
