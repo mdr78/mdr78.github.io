@@ -13,28 +13,28 @@ title: Why is ABI Stability important?
 Most open-source software projects follow distinct life cycle patterns as they
 evolve from the genesis of a idea, all the way through to a mature stable
 well-defined project. You can see this evolution reflected in all aspects of the
-project. Upstreaming rules for instance, are usually quiet permissive in the
-early days and then become gradually more conservative and risk adverse over
-time. Similarly, you expect lots of bugs in the early days, then things becomes
-more tested and stable over time, and so on.
+project. Upstreaming rules for instance, are usually permissive in the early
+days and then become gradually more conservative and risk adverse over time.
+Similarly, you expect lots of bugs in the early days, then things becomes more
+tested and stable over time, and so on.
 
 This life-cycle is also evident in a project's management of it's application
-binary interface, usually shortened to ABI. Before continuing, I should point
-out two things.
+binary interface, usually shortened to ABI. Before continuing, two things should
+be pointed out;
 
- - If you are bit fuzzy on what I mean by ABI, also know as "binary
-   compatibility", you should read through the [[https://en.wikipedia.org/wiki/Application_binary_interface][wikipedia entry]] on it. 
- - I have made quiet a bit of use of dataset's and tools from [[https://abi-laboratory.pro][ABI Laboratory
-   project]], it's worth following the links to that project below to review the
-   datasets. I have annotated those links with a (†).
+1. If you are bit fuzzy on what I mean by ABI, also know as "binary
+   compatibility", you should read through the [[https://en.wikipedia.org/wiki/Application_binary_interface][wikipedia entry]] on it.
+2. We have made quite a bit of use of the dataset's and tools from the [[https://abi-laboratory.pro][ABI
+   Laboratory project]]. It's worth following the links to that project below to
+   review the data-sets, we annotated those links with a †.
 
-In the early days of a project, ABI changes are rarely given any consideration,
-you are usually /way/ too busy trying to change the world! Then as time goes on
-and the project becomes popular. As more people join the project, and become
+In the early days of a project, ABI changes are rarely given any consideration
+as you are usually /way/ too busy trying to change the world! Then time goes on
+and the project becomes popular. The more users join the project, and become
 dependent on it, the more time you spend making sure that you don't break their
 software.
 
-At the extreme end of this cycle are very mature project's like the Linux
+At the extreme end of this cycle are very mature projects like the Linux
 Kernel. Linus Torvalds explains Linux's commitment to maintaining a stable ABI
 in his [[https://yarchive.net/comp/linux/gcc_vs_kernel_stability.html][own words]].
 
@@ -44,8 +44,8 @@ lengths to maintain even badly designed or unintentional interfaces. Breaking
 user programs simply isn't acceptable. -- Linus Torvalds, 2005
 #+END_QUOTE
 
-There are a few distinct patterns of ABI management, between fledgling projects
-and very mature project's like Linux.
+There are a few distinct patterns of ABI management, between fledgling and very
+mature project's like Linux.
 
 ** Patterns of ABI management
 
@@ -98,7 +98,7 @@ example of this form evolution.
  
 Some software projects, particularly programming languages and operating
 systems, by virtue of being governed either by a strict set of standards and/or
-the requirement to offer very strong guarantee's about backward compatibility,
+the requirement to offer very strong guarantees about backward compatibility,
 change very rarely. That is, they have a well-defined ABI from the start and it
 very rarely changes thereafter, with is no period of stablization as such.
 [[https://abi-laboratory.pro/index.php?view=timeline&l=libcxxabi][LibC++ (†)]] and [[https://abi-laboratory.pro/index.php?view=timeline&l=glibc][GlibC (†)]] are good examples of these sorts of projects.
@@ -131,13 +131,12 @@ very rarely changes thereafter, with is no period of stablization as such.
 
 [[file:~/blog/mdr78.github.io/Org/glibc.png]]
 
-Other software projects, will support stable ABI version for some period of time
-of months or more often years, with planned periodic ABI breakages to introduce
-new features or to facilitate extensive re-factoring of software and the like.
-These breakage's are often timed to coordinate with the lifecycle of consuming
-software such as operating system distributions (Debian etc) or higher level
-applications. [[https://abi-laboratory.pro/index.php?view=timeline&l=libav][LibAV (†)]] and [[https://abi-laboratory.pro/index.php?view=timeline&l=ffmpeg][ffmpeg (†)]] are the clearest examples of this kind of
-project, I can think of.
+Other software projects will support a stable ABI version for some period of
+time, usually months or more often years, with planned periodic ABI breakages to
+introduce new features or to facilitate re-factoring. These breakage's are often
+timed to coordinate with the lifecycle of consuming software such as operating
+system distributions (Debian etc) or higher level applications. [[https://abi-laboratory.pro/index.php?view=timeline&l=libav][LibAV (†)]] and
+[[https://abi-laboratory.pro/index.php?view=timeline&l=ffmpeg][ffmpeg (†)]] are clear examples of this kind of project.
 
 #+PLOT: set:"xtics rotate" timefmt "%d/%m/%Y"
 #+PLOT: title:"libav Backward Compatibility"
@@ -175,7 +174,7 @@ project, I can think of.
 
 Finally, some software project's by virtue of a design philosophy or simply
 because they are that bit earlier in their lifecycle, choose to offer fewer
-guarantee's of ABI compatibility. [[https://abi-laboratory.pro/index.php?view=timeline&l=dpdk][DPDK]] and [[https://abi-laboratory.pro/index.php?view=timeline&l=Boost][Boost]] projects are
+guarantees of ABI compatibility. [[https://abi-laboratory.pro/index.php?view=timeline&l=dpdk][DPDK]] and [[https://abi-laboratory.pro/index.php?view=timeline&l=Boost][Boost]] projects are
 both good examples of this kind of project.
 
 #+PLOT: set:"xtics rotate" timefmt "%d/%m/%Y"
@@ -203,28 +202,30 @@ both good examples of this kind of project.
 
 ** Why are ABI Breakages considered bad?
 
-Put simply, can you imagine a world in which every time you purchased a new car
-the driving experience changed? You thought you knew how to drive a car, right?
-You get your new wheels, all excited and discover that it's like are starting
-all over again. How frustrating would that be?
+Modern software ecosystems are built on a hard commitment that binary interfaces
+will be carefully managed. When this commitment does not hold things fall apart
+rapidly, with applications failing to start or randomly crashing.
 
-ABI breakages are a bit like this. In the best case, they oblige consuming
-software to have to rebuild their code to use the latest version with the new
-ABI. In the worst case, they oblige that software to have to be refactored or
-reworked significantly due to ABI changes.
+Imagine a world in which there was no guarantee that applications installed from
+an 'app' store or repository would just work, imagine how frustrating that might
+be for users? Today this all just works and we take for granted that behind the
+scenes, engineers are working hard to ensure that updates don't break ABIs and
+therefore do not break applications. However many will remember a [[https://en.wikipedia.org/wiki/DLL_Hell][time when]] such
+guarantees either didn't exist or were hard to enforce.
 
-And the consequences? Well in the best case, this behaviour makes developers
-naturally reluctant to upgrade to the latest version of the project, they tend
-to get sticky on older versions. In the worst case, those developers might start
-looking for some else that doesn't break their code quiet so much.\\
+And the consequences? Naturally defensive behaviours will follow, developers
+will start to statically link with their dependencies and become slow about
+picking up the latest version of those dependencies as being too risky. In the
+worst case, some developers might start looking for another ecosystem that
+doesn't break their code and their application quite so much.\\
 
 And this worst case, happens more often than you might think ...\\
 
 [[https://en.wikipedia.org/wiki/Miguel_de_Icaza][Miguel De Icaza]] is one the fathers' of the [[https://en.wikipedia.org/wiki/The_GNOME_Project][GNOME Project]], one of the best
 [[https://en.wikipedia.org/wiki/Desktop_environment][desktop environments]] for Linux. For a few years in the late 90s and early 00s,
-it looked Linux desktop distributions based on GNOME had a real shot with
+it looked like Linux desktop distributions based on GNOME had a real shot with
 competing with Microsoft Windows to become a popular desktop operating system.
-However despite all the excitement, huge community effort, and commerical
+However despite all the excitement, huge community effort, and commercial
 support from major Linux vendors, it never really happened. Miguel explains why
 in his blog post [[https://tirania.org/blog/archive/2012/Aug-29.html][What Killed the Linux Desktop]] (worth a read).
 
@@ -244,34 +245,34 @@ on Windows 8. And you can still run your old OSX apps on Mountain Lion...
 
 It's a sobering message, ABI stability done right helped contribute to Linux's
 vast success as an operating system and done wrong, it hurt it's popularity as
-desktop operating system. The risk is for project's with an unstable API is
+desktop operating system. The risk is for project's with an unstable ABI is
 clear, eventually your consumers will start looking for something else that
-doesn't break their code quiet so much.
+doesn't break their code quite so much.
 
-DPDK's has an [[https://doc.dpdk.org/guides-19.08/contributing/versioning.html][ABI policy]] committing the community to preserving the DPDK ABI
-since 2015. 
+DPDK's has had an [[https://doc.dpdk.org/guides-19.08/contributing/versioning.html][ABI policy]] committing the community to preserving the DPDK ABI
+since 2015.
 
 #+BEGIN_QUOTE
-Note that the above process for ABI deprecation should not be
-undertaken lightly. ABI stability is extremely important for downstream
-consumers of the DPDK, especially when distributed in shared object form. Every
-effort should be made to preserve the ABI whenever possible. The ABI should only
-be changed for significant reasons, such as performance enhancements. ABI
-breakage due to changes such as reorganizing public structure fields for
-aesthetic or readability purposes should be avoided.
+Note that the above process for ABI deprecation should not be undertaken
+lightly. ABI stability is extremely important for downstream consumers of the
+DPDK, especially when distributed in shared object form. Every effort should be
+made to preserve the ABI whenever possible. The ABI should only be changed for
+significant reasons, such as performance enhancements. ABI breakage due to
+changes such as reorganizing public structure fields for aesthetic or
+readability purposes should be avoided. 
 -- DPDK ABI Policy, 19.08
 #+END_QUOTE
 
-The policy encourages contributors to be mindful of consumers when making ABI
-changes, this policy is now evolving to offer consumers more guarantees of
-compatibility.
+The DPDK ABI policy encourages contributors to be mindful of consumers when
+making ABI changes. What is changing in DPDK, is that this policy is now
+evolving to offer consumers more guarantees of future compatibility.
 
 ** How we are changing DPDK?
 
-Recently the 3rd revision of a [[http://inbox.dpdk.org/dev/1565864619-17206-1-git-send-email-mdr@ashroe.eu/][patch]] to the DPDK ABI policy was posted to the
-community, intended to start the process of moving DPDK out of the last category
-of projects described above and providing it's consumers with more certainty
-around future ABI compatibility. This patch has been approved by the [[https://core.dpdk.org/techboard/][DPDK
+Recently the 6th revision of a new ABI [[http://inbox.dpdk.org/dev/1569603283-1857-1-git-send-email-mdr@ashroe.eu/][policy]] was posted to the community,
+intended to start the process of moving DPDK out of the last category of
+projects described above and providing it's consumers with more certainty around
+future ABI compatibility. This policy has been approved in principle by the [[http://inbox.dpdk.org/dev/20190927140255.GA1865@bricha3-MOBL.ger.corp.intel.com/][DPDK
 Technical Board]] and will become the new policy following the DPDK 19.11 LTS
 release.
 
@@ -285,33 +286,44 @@ described for the LibAV and FFMpeg projects above. A pattern that is
 characterized by periods of ABI stability with periodic ABI breakages to
 facilitate change. In this way, a DPDK "major" ABI version will be declared
 aligned with the DPDK LTS release, and then supported in all the quarterly
-release over the subsequent year.
+release over the year following the LTS release.
 
-To be clear, this /does not/ mean the ABI cannot change during this one year
-stable period. It only means that the DPDK community will guarantee that
-applications built and dynamically linked against the DPDK LTS release will
-continue to work, without requiring a rebuild, through the quarterly releases
-for the following year. The DPDK ABI can and will continue to evolve during this
-period, adding great new features and so on, so long as ABI compatibility with
-the LTS release is preserved.
+** What does this mean for Contributors?
 
-However should a change be so dramatic as to require an unavoidable ABI
-compatibility breakage, this change will now need to wait until the declaration
-of the next major ABI version, aligned with the next LTS release. The intention
-is that the one year period between major ABI versions, will then be reviewed
-after the initial year with the intention of lengthening the stability period
-and period between ABI breakages to two years for the next major ABI version.
+At a high-level, it means that the community will become more deliberate about
+how the DPDK ABI is managed. Any new features will be required to maintain
+existing interfaces between LTS releases, and in general ABI changes will
+receive more scrutiny than has been the case in the past.\\
 
-The new ABI policy change encourages contributors to maintain ABI compatibility
-with the major ABI version, by promoting a permissive culture around those
-changes that preserve ABI compatibility. In addition, experimental libraries and
-API continue to exist outside of any ABI compatibility requirements, encouraging
-contributors and maintainers to give new features more time to settle before
-making them a formal part of the ABI.
+To be absolutely clear, the DPDK ABI _*can*_ change while ABI compatibility is
+being maintained.\\
+
+This means that the DPDK community will guarantee, that applications built and
+dynamically linked against the most recent LTS release will continue to work,
+without requiring a rebuild, through the quarterly releases for the year
+following the LTS release. The DPDK ABI can and will continue to evolve during
+this period, adding great new features and improvements, so long as ABI
+compatibility with the LTS release is preserved.
+
+Changes that are so dramatic as to require an ABI compatibility breakage will
+now need to wait until the next ABI breakage window at the next LTS release.
+
+** How do we prepare for this change?
+
+The initial period of ABI stability will run for one year following the v19.11
+release. This was designed to minimize disruption to the community, as most
+contributors are targeting the LTS release with their changes. Currently ABI
+breakage windows are aligned with LTS releases, meaning that even in the worst
+case event of an unavoidable ABI breaking change, the impact of the new policy
+will be minimal.
+
+This has been designed to start to familiarize the community with the
+requirements of ABI compatibility, while still permitting ABI breakages for the
+next LTS release. The ABI policy will then be reviewed after this initial year,
+with the intention of lengthening the stability period and period between ABI
+breakages to two years.
 
 If you are interested in the next level of detail of how the new policy will
-work, can review the [[http://inbox.dpdk.org/dev/1565864619-17206-1-git-send-email-mdr@ashroe.eu/][patch]].
+work, can review the [[http://inbox.dpdk.org/dev/1569603283-1857-1-git-send-email-mdr@ashroe.eu/][patch]].\\
 
-Ray Kinsella <mdr@ashroe.eu>\\
-
-Thomas Monjalon <thomas@monjalon.net>\\
+Ray Kinsella & Thomas Monjalon

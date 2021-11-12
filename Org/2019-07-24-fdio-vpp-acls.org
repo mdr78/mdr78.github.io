@@ -27,7 +27,7 @@ from the FD.io CSIT performance report.
 | [[The FD.io VPP ACL Plugin]] | Lowest                  | Match on restricted L2-L4 fields, stateful & stateless               |
 | [[FD.io VPP COP]]            | Highest (software only) | Match on Layer 3 IPs, stateless                                      |
 | [[FD.io VPP Flow]]           | Highest (accelerated)   | Match on restricted L2-L4 fields, stateless, limited number of flows |
-| FD.io Classifiers        | TBD                     | Match on any field in the first 80 bytes, TBD                        |
+| [[FD.io Classifiers]]        | TBD                     | Match on any field in the first 80 bytes, TBD                        |
 
 
 * FD.io VPP ACLs Options
@@ -42,13 +42,11 @@ from the FD.io CSIT performance report.
 ******** UDP Ports
 ******** TCP Ports & Flags
 ******** ICMP Messages
-
 ****** Directional
 ******* Input ACLs
         Run before the IP flow classification.
 ******* Output ACLs
         Run before interface output.
-
 ****** Actions
 ******* Permit (stateless)
 ******* Drop (stateful)

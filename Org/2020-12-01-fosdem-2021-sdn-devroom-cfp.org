@@ -4,48 +4,68 @@
 #+BEGIN_EXPORT html
 ---
 layout: default
-title: FOSDEM 2020 Software Defined Networking Devroom CFP
+title: FOSDEM 2021 Software Defined Networking Devroom CFP
 ---
 #+END_EXPORT
 
-We are pleased to announce the Call for Participation for the FOSDEM 2020
-Software Defined Networking devroom!
+We are pleased to announce the Call for Participation for the FOSDEM 2021
+Software Defined Networking devroom! FOSDEM is a free event for software
+developers to meet, share ideas and collaborate.
 
-Important dates:
+   - FOSDEM is free to attend. There is no registration.
+   - FOSDEM [[http://www.fosdem.org/][website]] 
+   - FOSDEM [[https://fosdem.org/2021/practical/conduct/][code of conduct]]
 
-| Nov 24th 2019 | Submission deadline for talk proposals |
-| Dec 15th 2019 | Announcement of the final schedule     |
-| Feb 1st 2020  | Software Defined Networking devroom    |
+**Please feel free to forward this CFP to anyone you think may be interested.**
+
+** New rules / what changes since last year
+For obvious reasons, this year the event will not take place in a physical
+location but online.
+
+   - The reference time will be Brussels local lime (CET).
+   - Talks will be pre-recorded in advance, and streamed during the event
+   - Q/A session will be live
+   - A facility will be provided for people watching to chat between themselves
+   - A facility will be provided for people watching to submit questions
+   - Clearly the venue will be more comfortable this year, please don't expect
+     this level of service every year!
+
+** Important Dates
+
+|  | Submission deadline            |
+|  | Announcement of selected talks |
+|  | Presentations upload deadline  |
+|  | Conference dates (online)      |
+|  | SDN devroom date (online)      |
 
 Talks covering any projects or technologies within the networking domain are
 welcome, with the only condition being that the project or technology must be
-free and open source. Software Defined Networking continues to be an exciting
-and growing field and FOSDEM gives an opportunity to reach a large audience of
-knowledgeable, highly technical, free and open source software activists. 
+free and open source. The SDN devroom team are asking contributors to make a
+special effort to attend, present, contribute and discuss at this years FOSDEM.
+Please accept our apologies for the relative lateness of this CFP, there is a
+huge amount of work going on behind the scenes to make this years FOSDEM
+happen.
 
 ** Topics:
 
-This year the devroom topics will include the following fields.
+If it moves network packets, or interacts with, or supervises entities that
+moves network packets, it is likely a topic the devroom is interested in. This
+year the devroom topics will include the following fields.
 
 | Domain         | IoT, Cloud, Enterprise, Service Provider, Wireless and Cellular.                         |
 | Physical       | low power, mesh, high throughput, low latency, optical, wireless                         |
-| Infrastructure | switching, routing, load balancing, translation, authentic, crypto, detection, intercept |
+| Infrastructure | switching, routingI, load balancing, translation, authentic, crypto, detection, intercept |
 | Tooling        | libraries, frameworks, tracing, debugging, domain specific languages and extensions.     |
 | Telemetry      | counters & statistics, interference, analysis, automation.                               |
 | Validation     | performance, latency, packet manipulation & fuzzing, traffic generators.                 |
 | Orchestration  | management, network-layer plugins and controllers.                                       |
-
-This year the devroom will focus on cloud infrastructure, and the challenges of
-scaling and resiliency posed by cloud deployments - what does it take to build a
-fast and robust cloud native network? What does this mean in the age of
-edge cloud? \\
-
+\\
 ** Suggested Projects:
 
-A non-exhaustive representative list of the projects and topics we would like to
-see on the schedule are:
+A /non-exhaustive/ representative list of the projects and topics we would love
+to see on the schedule are:
 
-| Frameworks  | DPDK, eBPF, XDP                                                                   |
+| Frameworks  | DPDK, eBPF, XDP                                                                            |
 | Switching   | Snabb, OpenvSwitch, Tungsten Fabric, Lagopus, FastClick                                    |
 | Stacks      | Linux, *BSD, FD.io, F-Stack, DMM, mTCP, Seastar, YAStack                                   |
 | Controllers | Istio/Envoy, Network Service Mesh, Neutron, CNI, Canal, ODL, ONOS, Plumgrid, OVN, Contrail |
@@ -66,7 +86,7 @@ Proposals should be made through the FOSDEM Pentabarf submission tool. You do
 not need to create a new Pentabarf account if you already have one from a past
 year. \\
 
-[[https://penta.fosdem.org/submission/FOSDEM20][https://penta.fosdem.org/submission/FOSDEM20]]
+[[https://penta.fosdem.org/submission/FOSDEM21][https://penta.fosdem.org/submission/FOSDEM21]]
 
 Please select the "Software Defined Networking" as the *track* and ensure you
 include the following information when submitting a proposal:
@@ -80,9 +100,9 @@ include the following information when submitting a proposal:
 | Event   | Abstract               | Short abstract of one or two paragraphs.                                          |
 | Event   | Duration               | Please indicate the length of your talk; 15 min, 30 min or 45 min                 |
 
-The deadline for submissions is November 24th, 2019. FOSDEM will be held on the
-weekend of February 1-2, 2020 and the Software Defined Networking devroom will
-take place on Saturday, February 1, 2020. 
+The deadline for submissions is December 20th, 2020. FOSDEM will be held on the
+weekend of February 6-7, 2021 and the Software Defined Networking devroom will
+take place on Sunday, February 7, 2021. 
 
 Please also join the devroom’s mailing list, which is the official communication
 channel for the devroom:
@@ -91,14 +111,12 @@ channel for the devroom:
 
 ** Notifications:
 
-**Please feel free to forward this CFP to anyone you think may be interested.**
+As usual, mostly due to time limitations I am reaching out to my regular contact
+list with [[https://mailchimp.com][mailchimp]]. I entirely understand if you do not wish to be reached in
+this way. If this is case please send me a note at [[mailto://mdr@ashroe.eu][mdr@ashroe.eu]], and I will
+remove you from the distribution. \\
 
-Lastly, this year mostly due to time limitations I am reaching out to my regular
-contact list with [[https://mailchimp.com][mailchimp]]. I entirely understand if you do not wish to be
-reached in this way. If this is case please send me a note at [[mailto://mdr@ashroe.eu][mdr@ashroe.eu]], and
-I will remove you from the distribution. \\
-
-** Steering Committee:
+** Team:
 
 Ray Kinsella\\
 Thomas Monjalon\\
