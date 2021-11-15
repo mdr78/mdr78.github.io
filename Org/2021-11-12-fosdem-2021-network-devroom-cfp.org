@@ -40,10 +40,10 @@ We typically host a variety of talks on Networking topics including:
  - Network monitoring (inventory, discovery & telemetry),
  - Network management (enterprise, carrier-grade, cloud, IoT)
  - Networking protocols (the full alphabet soup)
- - Security (ips, ids, protocols)
+ - Security (IPS, IDS, protocols)
  - Authentication
- - Development tools (libraries, sdks, plugins)
- - Network Stacks 
+ - Development tools (libraries, SDKs, plugins)
+ - Network stacks 
 
 
 ** Suggested Topics:
@@ -54,7 +54,7 @@ very /non-exhaustive/ list of the projects and topics we would love to see on
 the schedule are:
 
 | Monitoring  | Nagios, Icinga2, Naemon, NTop, SNAS, Graphana, Prometheus         |
-| Frameworks  | DPDK, eBPF, XDP, FD.io                                            |
+| Frameworks  | DPDK, eBPF, XDP, FD.io, PANDA                                     |
 | Switching   | Snabb, OpenvSwitch, Tungsten Fabric, Lagopus, FastClick           |
 | Stacks      | Linux, *BSD, F-Stack                                              |
 | Controllers | Istio, Envoy, Network Service Mesh, OpenDayLight, Calico, Contiv, |

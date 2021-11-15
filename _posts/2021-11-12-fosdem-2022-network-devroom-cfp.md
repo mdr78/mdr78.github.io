@@ -70,10 +70,10 @@ We typically host a variety of talks on Networking topics including:
 -   Network monitoring (inventory, discovery & telemetry),
 -   Network management (enterprise, carrier-grade, cloud, IoT)
 -   Networking protocols (the full alphabet soup)
--   Security (ips, ids, protocols)
+-   Security (IPS, IDS, protocols)
 -   Authentication
--   Development tools (libraries, sdks, plugins)
--   Network Stacks
+-   Development tools (libraries, SDKs, plugins)
+-   Network stacks
 
 
 # Suggested Topics:
@@ -100,7 +100,7 @@ the schedule are:
 
 <tr>
 <td class="org-left">Frameworks</td>
-<td class="org-left">DPDK, eBPF, XDP, FD.io</td>
+<td class="org-left">DPDK, eBPF, XDP, FD.io, PANDA</td>
 </tr>
 
 
