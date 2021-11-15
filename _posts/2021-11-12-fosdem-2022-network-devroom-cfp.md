@@ -1,7 +1,7 @@
 ---
 layout: default
-title:  "FOSDEM 2022 Network Devroom CFP"
-date:   2021-11-12 00:00:00 +0000
+title: FOSDEM 2022 Network Devroom CFP
+date: 2021-11-12 00:00:00 +0000
 ---
 
 We are excited to announce that the call for proposals is now open for the  
@@ -10,8 +10,9 @@ share ideas and collaborate. FOSDEM is one of the largest events of its kind,
 hosting, thousands of developers of free and open source software from all over  
 the world.  
 
-Please note that, due to Covid-19, FOSDEM will be held virtually again next  
-year on the 5th and 6th of February, 2022.  
+Please note that, due to Covid-19, FOSDEM will be held virtually again next year  
+on the 5th and 6th of February, 2022. All presentations will be pre-recorded  
+with live chat during each presentation and live Q&A after each presentation.  
 
 
 # Important Dates
@@ -26,7 +27,7 @@ year on the 5th and 6th of February, 2022.
 </colgroup>
 <tbody>
 <tr>
-<td class="org-left">Sunday 19th December</td>
+<td class="org-left">Sunday 12th December</td>
 <td class="org-left">Submission deadline</td>
 </tr>
 
@@ -39,7 +40,7 @@ year on the 5th and 6th of February, 2022.
 
 <tr>
 <td class="org-left">Friday 28th January</td>
-<td class="org-left">Presentations upload deadline</td>
+<td class="org-left">Recorded Presentation and slide upload deadline</td>
 </tr>
 
 
@@ -135,7 +136,7 @@ the schedule are:
 
 <tr>
 <td class="org-left">Management</td>
-<td class="org-left">ONAP, Open-O, Ganglia, NetSNMP, PNDA.io</td>
+<td class="org-left">ONAP, Ganglia, NetSNMP, PNDA.io</td>
 </tr>
 
 
@@ -244,7 +245,8 @@ information when submitting a proposal:
 </tbody>
 </table>
 
-The deadline for submissions is Friday 28th January. FOSDEM will be held on the weekend  
+If your talk is accepted, the deadline to upload your slides and a pre-recorded  
+version of your talk is Friday 28th January. FOSDEM will be held on the weekend  
 of February 5th & 6th, 2022 and the Network devroom will take place on TBD.  
 
 Please also join the devroom’s mailing list, which is the official communication  
@@ -261,3 +263,4 @@ Thomas Monjalon
 Emma Foley  
 Alexander Biehl  
 Charles Eckel  
+
