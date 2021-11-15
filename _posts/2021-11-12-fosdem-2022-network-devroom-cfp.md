@@ -258,7 +258,7 @@ channel for the devroom:
 # Team:
 
 Ray Kinsella  
-Stephan Schmidth  
+Stephan Schmidt  
 Thomas Monjalon  
 Emma Foley  
 Alexander Biehl  
