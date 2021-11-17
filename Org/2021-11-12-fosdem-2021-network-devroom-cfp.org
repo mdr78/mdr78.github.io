@@ -33,8 +33,8 @@ with live chat during each presentation and live Q&A after each presentation.
 
 The FOSDEM Network devroom hosts a diversity of talks covering open source
 networking projects and technologies. The scope of the Network devroom is broad
-and targets those engineers engaged in network design, monitoring, management
-and software development with open source tools.
+and targets those software developers engaged in network design, monitoring,
+management and software development with open source tools.
 
 We typically host a variety of talks on Networking topics including:
  - Network monitoring (inventory, discovery & telemetry),
@@ -53,16 +53,16 @@ that moves network packets, it is likely a topic the devroom is interested in. A
 very /non-exhaustive/ list of the projects and topics we would love to see on
 the schedule are:
 
-| Monitoring  | Nagios, Icinga2, Naemon, NTop, SNAS, Graphana, Prometheus         |
-| Frameworks  | DPDK, eBPF, XDP, FD.io, PANDA                                     |
-| Switching   | Snabb, OpenvSwitch, Tungsten Fabric, Lagopus, FastClick           |
-| Stacks      | Linux, *BSD, F-Stack                                              |
-| Controllers | Istio, Envoy, Network Service Mesh, OpenDayLight, Calico, Contiv, |
-| Edge        | Akraino, Openness                                                 |
-| Routing     | FRRouting, BIRD, Go-BGP                                           |
-| Management  | ONAP, Ganglia, NetSNMP, PNDA.io                           |
-| Security    | Suricata, Snort                                                   |
-| Tooling     | VSPerf, TRex, Moongen, Scapy, Warp17                              |
+| Monitoring  | Nagios, Icinga2, Naemon, NTop, SNAS, Graphana, Prometheus, collectd |
+| Frameworks  | DPDK, eBPF, XDP, FD.io, PANDA                                       |
+| Switching   | Snabb, OpenvSwitch, Tungsten Fabric, Lagopus, FastClick             |
+| Stacks      | Linux, *BSD, F-Stack                                                |
+| Controllers | Istio, Envoy, Network Service Mesh, OpenDayLight, Calico, Contiv    |
+| Edge        | Akraino, Openness                                                   |
+| Routing     | FRRouting, BIRD, Go-BGP                                             |
+| Management  | ONAP, Ganglia, NetSNMP, PNDA.io                                     |
+| Security    | Suricata, Snort                                                     |
+| Tooling     | VSPerf, TRex, Moongen, Scapy, Warp17                                |
 
 
 Talks should be aimed at a technical audience, but should not assume that
