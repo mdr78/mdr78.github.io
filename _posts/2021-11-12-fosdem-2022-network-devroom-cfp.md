@@ -62,8 +62,8 @@ with live chat during each presentation and live Q&A after each presentation.
 
 The FOSDEM Network devroom hosts a diversity of talks covering open source  
 networking projects and technologies. The scope of the Network devroom is broad  
-and targets those engineers engaged in network design, monitoring, management  
-and software development with open source tools.  
+and targets those software developers engaged in network design, monitoring,  
+management and software development with open source tools.  
 
 We typically host a variety of talks on Networking topics including:  
 
@@ -94,7 +94,7 @@ the schedule are:
 <tbody>
 <tr>
 <td class="org-left">Monitoring</td>
-<td class="org-left">Nagios, Icinga2, Naemon, NTop, SNAS, Graphana, Prometheus</td>
+<td class="org-left">Nagios, Icinga2, Naemon, NTop, SNAS, Graphana, Prometheus, collectd</td>
 </tr>
 
 
@@ -118,7 +118,7 @@ the schedule are:
 
 <tr>
 <td class="org-left">Controllers</td>
-<td class="org-left">Istio, Envoy, Network Service Mesh, OpenDayLight, Calico, Contiv,</td>
+<td class="org-left">Istio, Envoy, Network Service Mesh, OpenDayLight, Calico, Contiv</td>
 </tr>
 
 
