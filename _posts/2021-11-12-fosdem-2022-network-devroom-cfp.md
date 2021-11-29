@@ -51,7 +51,7 @@ with live chat during each presentation and live Q&A after each presentation.
 
 
 <tr>
-<td class="org-left">TBD</td>
+<td class="org-left">5th February</td>
 <td class="org-left">Network devroom date (online)</td>
 </tr>
 </tbody>
@@ -247,7 +247,8 @@ information when submitting a proposal:
 
 If your talk is accepted, the deadline to upload your slides and a pre-recorded  
 version of your talk is Friday 28th January. FOSDEM will be held on the weekend  
-of February 5th & 6th, 2022 and the Network devroom will take place on TBD.  
+of February 5th & 6th, 2022 and the Network devroom will take place on the 5th  
+February.  
 
 Please also join the devroom’s mailing list, which is the official communication  
 channel for the devroom:  
