@@ -1,0 +1,57 @@
+#+STARTUP: showall indentX
+#+STARTUP: hidestars
+#+OPTIONS: num:nil tags:nil toc:nil timestamps:nil \n:t
+#+BEGIN_EXPORT html
+---
+layout: default
+title: Pasting images into org-mode on WSL
+date: 2022-03-25 00:00:00 +0000
+---
+#+END_EXPORT
+
+There are 101 different solutions to the problem of pasting images into org-mode
+on the Windows Subsystem for Linux (WSL). My solution is a hybrid of a few of
+them I found on stack-exchange and the like, after playing with them for a while
+and needing to fix some bugs. The most notable bug which was the handling of
+spaces in filenames and translating WSL paths to Windows paths.
+
+Copy and paste images into org-mode on WSL/Windows.
+
+#+begin_src lisp
+  (defun as-windows-path (unix-path)
+    (substring
+     (shell-command-to-string
+      (concat "wslpath -w '" unix-path "'")) 0 -1))
+  
+  (defun powershell (script)
+    (call-process "powershell.exe" nil nil nil
+                  "-Command" (concat "& {" script "}")))
+  
+  (defun my-org-screenshot ()
+    "Take a screenshot into a time stamped unique-named file in the
+  same directory as the org-buffer and insert a link to this file."
+    (interactive)
+    (let* ((filename
+            (concat
+             (make-temp-name
+              (concat (buffer-file-name)
+                      "_"
+                      (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+           (wsl-path
+            (concat (as-windows-path(file-name-directory filename))
+                    "\\"
+                    (file-name-nondirectory filename)))
+           (ps-script
+            (concat "(Get-Clipboard -Format image).Save('" wsl-path "')")))
+  
+      (shell-command "SnippingTool.exe /clip")
+      (powershell ps-script)
+  
+      (insert "#+ATTR_ORG: :width 500")
+      (newline)
+      (insert (concat "[[file:" filename "]]"))
+      )
+    (org-display-inline-images))
+  
+  (global-set-key "\C-cs" 'my-org-screenshot)
+#+end_src

@@ -1,0 +1,57 @@
+---
+layout: default
+title: Pasting images into org-mode on WSL
+date: 2022-03-25 00:00:00 +0000
+---
+
+<p>
+There are 101 different solutions to the problem of pasting images into org-mode<br />
+on the Windows Subsystem for Linux (WSL). My solution is a hybrid of a few of<br />
+them I found on stack-exchange and the like, after playing with them for a while<br />
+and needing to fix some bugs. The most notable bug which was the handling of<br />
+spaces in filenames and translating WSL paths to Windows paths.<br />
+</p>
+
+<p>
+Copy and paste images into org-mode on WSL/Windows.<br />
+</p>
+
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #8c8c8c;">(</span><span style="color: #b4fa70;">defun</span> <span style="color: #fce94f;">as-windows-path</span> <span style="color: #93a8c6;">(</span>unix-path<span style="color: #93a8c6;">)</span>
+  <span style="color: #93a8c6;">(</span>substring
+   <span style="color: #b0b1a3;">(</span>shell-command-to-string
+    <span style="color: #97b098;">(</span>concat <span style="color: #e9b96e;">"wslpath -w '"</span> unix-path <span style="color: #e9b96e;">"'"</span><span style="color: #97b098;">)</span><span style="color: #b0b1a3;">)</span> <span style="color: #e9b2e3;">0</span> <span style="color: #e9b2e3;">-1</span><span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
+
+<span style="color: #8c8c8c;">(</span><span style="color: #b4fa70;">defun</span> <span style="color: #fce94f;">powershell</span> <span style="color: #93a8c6;">(</span>script<span style="color: #93a8c6;">)</span>
+  <span style="color: #93a8c6;">(</span>call-process <span style="color: #e9b96e;">"powershell.exe"</span> nil nil nil
+                <span style="color: #e9b96e;">"-Command"</span> <span style="color: #b0b1a3;">(</span>concat <span style="color: #e9b96e;">"&amp; {"</span> script <span style="color: #e9b96e;">"}"</span><span style="color: #b0b1a3;">)</span><span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
+
+<span style="color: #8c8c8c;">(</span><span style="color: #b4fa70;">defun</span> <span style="color: #fce94f;">my-org-screenshot</span> <span style="color: #93a8c6;">()</span>
+  <span style="color: #e9b96e;">"Take a screenshot into a time stamped unique-named file in the</span>
+<span style="color: #e9b96e;">same directory as the org-buffer and insert a link to this file."</span>
+  <span style="color: #93a8c6;">(</span>interactive<span style="color: #93a8c6;">)</span>
+  <span style="color: #93a8c6;">(</span><span style="color: #b4fa70;">let*</span> <span style="color: #b0b1a3;">(</span><span style="color: #97b098;">(</span>filename
+          <span style="color: #aebed8;">(</span>concat
+           <span style="color: #b0b0b3;">(</span>make-temp-name
+            <span style="color: #90a890;">(</span>concat <span style="color: #a2b6da;">(</span>buffer-file-name<span style="color: #a2b6da;">)</span>
+                    <span style="color: #e9b96e;">"_"</span>
+                    <span style="color: #a2b6da;">(</span>format-time-string <span style="color: #e9b96e;">"%Y%m%d_%H%M%S_"</span><span style="color: #a2b6da;">)</span><span style="color: #90a890;">)</span> <span style="color: #b0b0b3;">)</span> <span style="color: #e9b96e;">".png"</span><span style="color: #aebed8;">)</span><span style="color: #97b098;">)</span>
+         <span style="color: #97b098;">(</span>wsl-path
+          <span style="color: #aebed8;">(</span>concat <span style="color: #b0b0b3;">(</span>as-windows-path<span style="color: #90a890;">(</span>file-name-directory filename<span style="color: #90a890;">)</span><span style="color: #b0b0b3;">)</span>
+                  <span style="color: #e9b96e;">"\\"</span>
+                  <span style="color: #b0b0b3;">(</span>file-name-nondirectory filename<span style="color: #b0b0b3;">)</span><span style="color: #aebed8;">)</span><span style="color: #97b098;">)</span>
+         <span style="color: #97b098;">(</span>ps-script
+          <span style="color: #aebed8;">(</span>concat <span style="color: #e9b96e;">"(Get-Clipboard -Format image).Save('"</span> wsl-path <span style="color: #e9b96e;">"')"</span><span style="color: #aebed8;">)</span><span style="color: #97b098;">)</span><span style="color: #b0b1a3;">)</span>
+
+    <span style="color: #b0b1a3;">(</span>shell-command <span style="color: #e9b96e;">"SnippingTool.exe /clip"</span><span style="color: #b0b1a3;">)</span>
+    <span style="color: #b0b1a3;">(</span>powershell ps-script<span style="color: #b0b1a3;">)</span>
+
+    <span style="color: #b0b1a3;">(</span>insert <span style="color: #e9b96e;">"#+ATTR_ORG: :width 500"</span><span style="color: #b0b1a3;">)</span>
+    <span style="color: #b0b1a3;">(</span>newline<span style="color: #b0b1a3;">)</span>
+    <span style="color: #b0b1a3;">(</span>insert <span style="color: #97b098;">(</span>concat <span style="color: #e9b96e;">"[[file:"</span> filename <span style="color: #e9b96e;">"]]"</span><span style="color: #97b098;">)</span><span style="color: #b0b1a3;">)</span>
+    <span style="color: #93a8c6;">)</span>
+  <span style="color: #93a8c6;">(</span>org-display-inline-images<span style="color: #93a8c6;">)</span><span style="color: #8c8c8c;">)</span>
+
+<span style="color: #8c8c8c;">(</span>global-set-key <span style="color: #e9b96e;">"\C-cs"</span> 'my-org-screenshot<span style="color: #8c8c8c;">)</span>
+</pre>
+</div>
