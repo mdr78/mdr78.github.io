@@ -1,0 +1,28 @@
+---
+layout: default
+title: Fixing string literal relocations in IOVisor's uBPF
+date: 2022-04-17 00:00:00 +0000
+---
+
+<p>
+While spending time learning more about <a href="https://en.wikipedia.org/wiki/Berkeley_Packet_Filter">eBPF</a>, I integrated IOVisor's <a href="https://github.com/iovisor/ubpf">uBPF</a><br />
+(Userspace eBPF) with FD.io VPP for fun. I quickly came across the problem that<br />
+uBPF didn't like the ELF object file's produced by Clang.<br />
+</p>
+
+<p>
+On investigation, I found that while these object contained .text sections with<br />
+eBPF byte code as you would expect, it was also introducing ELF relocations for<br />
+functions and string literals what uBPF couldn't interpret.Turns out that uBPF's<br />
+support for ELF relocations for string literals and functions both need some<br />
+work. I wrote <a href="https://github.com/iovisor/ubpf/pull/102">PR #102</a> which fixes the most obvious problems with string<br />
+literals. It copies the rodata sections containing the string literals onto the<br />
+heap, and then reads the relocation sections and updates pointers in the eBPF<br />
+byte code to point to the string literals, just before the eBPF byte itself is<br />
+interpreted into x86 byte code.<br />
+</p>
+
+<p>
+There is a long standing <a href="https://github.com/iovisor/ubpf/issues/18">bug #18</a> raised against uBPF that talks through most of<br />
+the gory details.<br />
+</p>
