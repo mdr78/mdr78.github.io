@@ -1,0 +1,67 @@
+#+STARTUP: showall indentX
+#+STARTUP: hidestars
+#+OPTIONS: num:nil tags:nil toc:nil timestamps:nil \n:t
+#+BEGIN_EXPORT html
+---
+layout: default
+title: How to configure gre-over-udp on Linux
+date: 2022-04-17 00:00:00 +0000
+---
+#+END_EXPORT
+
+How to setup a gre-over-udp tunnel on Linux is something I have learned and
+forgotten a few times now. So here is how you do it.
+
+- modprobe the fou kernel module, distro's don't seem to load the one by
+  default.
+  
+#+begin_src shell
+modprobe fou
+#+end_src
+
+- indicate that anything recieved on udp port 4754 is [[https://en.wikipedia.org/wiki/Generic_Routing_Encapsulation][General Routing
+  Ecapsulation (GRE)]] ([[https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers][ipproto 47]]).
+  
+  Remember that UDP header supplies no information about the encapsulated frame,
+  this command is how we tell linux to interpret anything that arrives on udp
+  port [[https://datatracker.ietf.org/doc/html/rfc8086#section-3.2.2][4754]] as GRE.
+
+#+begin_src shell
+  ip fou add port 4754 ipproto 47
+#+end_src
+  
+- create a new interface called `fou0`, as the local endpoint of the gre
+  tunnel.
+  - <remote-ip> is the ip address of the other side of the tunnel.
+  - <remove-dport> is the udp port of the other side of the tunnl, should be
+    udp port [[https://datatracker.ietf.org/doc/html/rfc8086#section-3.2.2][4754]].
+  
+#+begin_src shell
+  ip link add name fou0 type gre remote <remote-ip> encap fou encap-sport auto encap-dport <remote-dport> dev eth0
+#+end_src
+
+- add the ip ranges that run over the overlay interface `fou0`, by adding an ip
+  address and mask to the overlay interface.
+
+#+begin_src shell
+  ip addr add 100.100.1.1/16 dev fou0
+#+end_src
+
+- set the tunnel state to up, this will enable the interface and add the routes
+  to the kernels routing table. 
+
+#+begin_src shell
+ip link set up dev fou0
+#+end_src
+
+- ping across the overlay, to ensure everything is working as expected.
+
+#+begin_src shell
+$ sudo tcpdump -vi <interface>
+dropped privs to tcpdump
+tcpdump: listening on <interface>, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+18:25:40.018795 IP (tos 0x0, ttl 64, id 10744, offset 0, flags [DF], proto UDP (17), length 116)
+    10.11.1.2.40734 > 10.11.2.2.gre-in-udp: UDP, length 88
+18:25:40.018850 IP (tos 0x0, ttl 62, id 16735, offset 0, flags [DF], proto UDP (17), length 116)
+    10.11.2.2.40734 > 10.11.1.2.gre-in-udp: UDP, length 88
+#+end_src

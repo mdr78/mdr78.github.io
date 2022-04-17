@@ -1,0 +1,88 @@
+---
+layout: default
+title: How to configure gre-over-udp on Linux
+date: 2022-04-17 00:00:00 +0000
+---
+
+<p>
+How to setup a gre-over-udp tunnel on Linux is something I have learned and<br />
+forgotten a few times now. So here is how you do it.<br />
+</p>
+
+<ul class="org-ul">
+<li>modprobe the fou kernel module, distro's don't seem to load the one by<br />
+default.<br /></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-shell">modprobe fou
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><p>
+indicate that anything recieved on udp port 4754 is <a href="https://en.wikipedia.org/wiki/Generic_Routing_Encapsulation">General Routing<br />
+Ecapsulation (GRE)</a> (<a href="https://en.wikipedia.org/wiki/List_of_IP_protocol_numbers">ipproto 47</a>).<br />
+</p>
+
+<p>
+Remember that UDP header supplies no information about the encapsulated frame,<br />
+this command is how we tell linux to interpret anything that arrives on udp<br />
+port <a href="https://datatracker.ietf.org/doc/html/rfc8086#section-3.2.2">4754</a> as GRE.<br />
+</p></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-shell">ip fou add port <span style="color: #e9b2e3;">4754</span> ipproto <span style="color: #e9b2e3;">47</span>
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>create a new interface called `fou0`, as the local endpoint of the gre<br />
+tunnel.<br />
+<ul class="org-ul">
+<li>&lt;remote-ip&gt; is the ip address of the other side of the tunnel.<br /></li>
+<li>&lt;remove-dport&gt; is the udp port of the other side of the tunnl, should be<br />
+udp port <a href="https://datatracker.ietf.org/doc/html/rfc8086#section-3.2.2">4754</a>.<br /></li>
+</ul></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-shell">ip link add name fou0 type gre remote &lt;remote-ip&gt; encap fou encap-sport auto encap-dport &lt;remote-dport&gt; dev eth0
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>add the ip ranges that run over the overlay interface `fou0`, by adding an ip<br />
+address and mask to the overlay interface.<br /></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-shell">ip addr add <span style="color: #e9b2e3;">100.100.1.1/16</span> dev fou0
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>set the tunnel state to up, this will enable the interface and add the routes<br />
+to the kernels routing table.<br /></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-shell">ip link set up dev fou0
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>ping across the overlay, to ensure everything is working as expected.<br /></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-shell">$ sudo tcpdump -vi &lt;interface&gt;
+dropped privs to tcpdump
+tcpdump: listening on &lt;interface&gt;, link-type EN10MB <span style="color: #8c8c8c;">(</span>Ethernet<span style="color: #8c8c8c;">)</span>, snapshot length <span style="color: #e9b2e3;">262144</span> bytes
+<span style="color: #e9b2e3;">18:25:40.018795</span> IP <span style="color: #8c8c8c;">(</span>tos <span style="color: #e9b2e3;">0x0,</span> ttl <span style="color: #e9b2e3;">64,</span> id <span style="color: #e9b2e3;">10744,</span> offset <span style="color: #e9b2e3;">0,</span> flags <span style="color: #93a8c6;">[</span>DF<span style="color: #93a8c6;">]</span>, proto UDP <span style="color: #93a8c6;">(</span><span style="color: #e9b2e3;">17</span><span style="color: #93a8c6;">)</span>, length <span style="color: #e9b2e3;">116</span><span style="color: #8c8c8c;">)</span>
+    <span style="color: #e9b2e3;">10.11.1.2.40734</span> &gt; <span style="color: #e9b2e3;">10.11.2.2.gre-in-udp:</span> UDP, length <span style="color: #e9b2e3;">88</span>
+<span style="color: #e9b2e3;">18:25:40.018850</span> IP <span style="color: #8c8c8c;">(</span>tos <span style="color: #e9b2e3;">0x0,</span> ttl <span style="color: #e9b2e3;">62,</span> id <span style="color: #e9b2e3;">16735,</span> offset <span style="color: #e9b2e3;">0,</span> flags <span style="color: #93a8c6;">[</span>DF<span style="color: #93a8c6;">]</span>, proto UDP <span style="color: #93a8c6;">(</span><span style="color: #e9b2e3;">17</span><span style="color: #93a8c6;">)</span>, length <span style="color: #e9b2e3;">116</span><span style="color: #8c8c8c;">)</span>
+    <span style="color: #e9b2e3;">10.11.2.2.40734</span> &gt; <span style="color: #e9b2e3;">10.11.1.2.gre-in-udp:</span> UDP, length <span style="color: #e9b2e3;">88</span>
+</pre>
+</div>
