@@ -1,0 +1,20 @@
+#+STARTUP: showall indentX
+#+STARTUP: hidestars
+#+OPTIONS: num:nil tags:nil toc:nil timestamps:nil \n:t
+#+BEGIN_EXPORT html
+---
+layout: default
+title: Revamping my homepage
+date: 2022-04-19 00:00:00 +0000
+tags: github blog
+---
+#+END_EXPORT
+
+As I was adding more content to my blog, it was starting to feel messy and
+adding tags seemed like the obvious solution. What started out as a simple
+project to add tags to my blog, ended up in a more substantial rework to improve
+the look-and-feel, structure and add tags.
+
+All kudos belongs to Peter Roelants from whom I am borrowing heavily, as I am
+not a web frontend developer. You can find all the detail on his [[https://peterroelants.github.io/posts/adding-tags-to-github-pages/][blog]]. This
+meant revisiting all my previous posts to add tags, but it was worth the effort.

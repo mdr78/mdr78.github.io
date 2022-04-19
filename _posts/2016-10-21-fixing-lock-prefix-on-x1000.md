@@ -3,6 +3,7 @@ layout: post
 title:  "Fixing the LOCK Prefix X1000 Bug"
 date:   2016-10-21 13:10:44 +0000
 categories: X1000
+tags: linux
 ---
 After much fun installing Debian 7 (Wheezy) on an Intel Galileo Gen 2 I was greated by the following at the login prompt. 
 

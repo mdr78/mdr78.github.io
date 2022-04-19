@@ -6,6 +6,9 @@
 layout: default
 title: Fixing string literal relocations in IOVisor's uBPF
 date: 2022-04-17 00:00:00 +0000
+tags:
+ - eBPF
+ - uBPF
 ---
 #+END_EXPORT
 

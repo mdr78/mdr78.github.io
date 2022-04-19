@@ -3,10 +3,5 @@ layout: page
 title: About
 permalink: /about/
 ---
-
-Close to nothing to say about me.
-Long time Linux enthusiast, hacker, occasional maker and embedded software engineer.
-
-Somedays I feel closer to Dilbert, but mostly I am channeling Dogbert. 
-
-![](http://files.gamebanana.com/img/ico/sprays/dogbert1_5.png)
+Linux enthusiast and software engineer, hacking on software networking
+and embedded systems, occasional maker and cyclist. More about me on [Linkedin](https://www.linkedin.com/in/ray-kinsella-49658214).

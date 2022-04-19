@@ -3,6 +3,7 @@ layout: post
 title:  "Building a homebrew LTE Router Part 1"
 date:   2016-05-28 13:10:44 +0000
 categories: LTE router
+tags: maker
 ---
 
 Living in the country-side close to a small city (Limerick/Ireland) means that my access to high speed broadband is pretty limited. I do have a 'mom and pop shop' fixed wireless provider that does for netflix and spotify, but with erratic pings and at a times highly contended network, it was proving to be unsuitable for work. VOIP, Google Hangouts, Lync screen-sharing were all becoming problematic at peak times. I needed an alternative solution. 

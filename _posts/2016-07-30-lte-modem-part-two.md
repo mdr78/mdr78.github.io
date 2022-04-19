@@ -3,6 +3,7 @@ layout: post
 title:  "Building a homebrew LTE Router Part 2"
 date:   2016-07-30 13:10:44 +0000
 categories: LTE router
+tags: maker
 ---
 This post is part two of series on building a homebrew LTE router. In this post we dive into the software side of the build. If you haven't see the hardware side of the build described in the [first post](http://mdr78.github.io/lte/router/2016/05/28/lte-modem-part-one.html), its worth a quick scan to give you some context.
 

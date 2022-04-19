@@ -3,6 +3,7 @@ layout: post
 title:  "Securing your VPS"
 date:   2017-02-20 13:10:44 +0000
 categories: VPS
+tags: networking
 ---
 
 I recently setup a VPS with [time4vps](https://www.time4vps.eu/) - the reason why I need a VPS, is a subject for a future post. After a couple of days I logged on and was alarmed to find the following.

@@ -3,6 +3,7 @@ layout: post
 title:  "Repairing a dead Tronic Power Cube (KH 3106)"
 date:   2018-01-19 13:10:44 +0000
 categories: Repair
+tags: maker
 ---
 
 My Dad gave me the 'gift' of a completely dead Tronic Power Cube that was bought at some point from Lidl. It *should* be a useful portable battery for camping and power outages. It has a 12v Cigarette Lighter output, and 3v, 4.5v, 6v and 9v barrel connector outputs on it's front. On it's rear it has a set of 12v Banana plugs. It also has a good deal of surge protection, with both an output fuse on it's front and an input fuse on it's rear. It takes a standard 12v 0.5a input barrel connector to charge.

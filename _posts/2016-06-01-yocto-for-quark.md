@@ -3,6 +3,7 @@ layout: post
 title:  "Building Yocto for the Intel Galileo"
 date:   2016-06-01 13:10:44 +0000
 categories: galileo yocto
+tags: maker yocto linux
 ---
 
 Last year I upstreamed support for the Galileo Gen 1/2 to the [Yocto project](https://www.yoctoproject.org). So before I go any further detail talking about building a homebrew LTE modem based on the Galileo, I need to first describe the steps building a configurable Linux distro for the Intel Galileo 1/2. 

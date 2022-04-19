@@ -1,26 +1,27 @@
 ---
 layout: default
+title: Home
 ---
+
+<h1><span class="fa fa-home" aria-hidden="true"></span> {{ page.title }}</h1>
 
 <div class="home">
 
-  <h1 class="page-heading">Posts</h1>
-
   <ul class="post-list">
-    {% for post in site.posts %}
-      <li>
-        <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
-
-        <h2>
-          <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        </h2>
-	{% if post.excerpt %}
-		    {{ post.excerpt }}
-	{% endif %}
-      </li>
+    {% for post in site.posts limit:5 %}
+    <div class="card">
+	    <div class="card-body">
+		    <h3 class="card-title">{{ post.title }}</h3>
+		    <h6 class="card-subtitle mb-2 text-muted">{{ post.date | date_to_string }}</h6>
+		    <p class="card-text">
+          {% if post.excerpt %}
+		      {{ post.excerpt }}
+	        {% endif %}
+        </p>
+		    <a href="{{ post.url }}" class="btn btn-outline-primary">Read post</a>
+	    </div>
+    </div>
     {% endfor %}
   </ul>
-
-  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
 
 </div>

@@ -9,9 +9,9 @@
 title: Ray Kinsella's Homepage
 email: mdr [at] ashroe.eu
 description: > # this means to ignore newlines until "baseurl:"
-  A collection of notes mostly related to Linux, embedded, making and hardware.
+  A collection of notes mostly related to Linux, networking, embedded, making and hardware.
 baseurl: "" # the subpath of your site, e.g. /blog
-#url: "http://yourdomain.com" # the base hostname & protocol for your site
+url: "http://ashroe.eu" # the base hostname & protocol for your site
 github_username: mdr78
 
 # Build settings

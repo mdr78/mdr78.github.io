@@ -3,6 +3,7 @@ layout: post
 title:  "Offloading motion detection from your Synology Diskstation"
 date:   2017-02-20 13:10:44 +0000
 categories: Synology
+tags: maker
 ---
 
 I love my Synology DiskStation DS213j, and what's not to love. It's does a great job and has given me years of trouble-free service. It's got a _fantastic_  UI. Synology do a great job of keeping it up to date with regular updates. There is a library of useful apps for it, some of my favourites are Photo Station, Cloud Backup and Surveillance Station. 

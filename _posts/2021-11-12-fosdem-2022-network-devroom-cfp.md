@@ -2,6 +2,7 @@
 layout: default
 title: FOSDEM 2022 Network Devroom CFP
 date: 2021-11-12 00:00:00 +0000
+tags: fosdem
 ---
 
 We are excited to announce that the call for proposals is now open for the  
