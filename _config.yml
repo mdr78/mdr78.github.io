@@ -17,3 +17,11 @@ github_username: mdr78
 # Build settings
 markdown: kramdown
 exclude: [Org]
+
+whitelist: []
+plugins:
+  - github-pages
+  - jekyll-sitemap
+  - jekyll-redirect-from
+
+baseurl: "" # does not include hostname
