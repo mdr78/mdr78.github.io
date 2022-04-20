@@ -1,0 +1,110 @@
+---
+layout: default
+title: FD.io VPP Classifiers
+date: 2022-04-19 12:00:00 +0000
+tags: fd.io vpp acls
+---
+
+<p>
+Sometime ago, I wrote <a href="file:///home/ray/blog/mdr78.github.io/Org/2019-07-24-fdio-vpp-acls.html">a guide</a> covering the four different methods of<br />
+implementing ACLs with FD.io VPP that I was aware of. At that time, I wasn't<br />
+that familar with VPP classifiers, so I left them mostly TBD.<br />
+</p>
+
+<p>
+Recently I spent quiet a bit of time optimizing the performance of VPP<br />
+classifiers with the <a href="https://en.wikipedia.org/wiki/AVX-512">AVX-512</a> instruction-set. Although I am not going to get<br />
+into a discussion on the relative performance of classifers compared to the<br />
+other options discussed in this post.<br />
+</p>
+
+<p>
+Instead, I'll provide a brief overview how they work and provide enough<br />
+information to get you started. Classifiers are stateless, and are based on a<br />
+mask and match, you define the fields you want to match on in the mask and then<br />
+you define the values you want to match against.<br />
+</p>
+
+<p>
+The <b>mask</b> is defined when the classifier table is created, and allows you to<br />
+match anywhere on the first 80 bytes of packet. You can use either the VPP<br />
+grammar for describing mask fields.<br />
+</p>
+
+<pre class="example">
+classify table mask l3 ip4 dst buckets 2 memory-size 2M
+</pre>
+
+<p>
+or use a raw bitmask that indicates the classifier length and which bits<br />
+should be matched on.<br />
+</p>
+
+<pre class="example">
+classify table miss-next 0 mask hex 000000000000000000000000ffff000000000000000000ff000000000000ffffffffffffffff0000000000000000000000000000000000000000000000000000 buckets 2 memory-size 2M skip 0
+</pre>
+
+<p>
+The parameter 'skip' allows you to indicate that a given number of bytes should<br />
+be skipped from the head of the packet, so for instance if you want to skip the<br />
+Ethernet Header entirely you could specify 14 bytes here, this saves you<br />
+matching against bytes to are not interested in.<br />
+</p>
+
+<p>
+The parameters 'buckets &lt;n&gt;' and 'memory-size &lt;nM&gt;' allows you to size the<br />
+classifier table, under the covers classifiers are implemented in a very similar<br />
+way to the VPP bihash. You will need to estimate how many buckets you need in<br />
+advance, this is key in reducing search time and sizing memory accordingly.<br />
+</p>
+
+<p>
+The parameter 'miss-next' allows you to indicate the graph node to which packets<br />
+that miss all classifiers in the table should go to. Please note the value here<br />
+'0' is not the graph node index, it is the next node index.<br />
+</p>
+
+<p>
+The parameter 'next-table-index' allows you to nest classifiers tables, such<br />
+that a packet that misses one table, may still match on another.<br />
+</p>
+
+<p>
+The matches are defined in classifier table 'session' entries, and the match<br />
+length and values must match that of the mask. As with the table creation you<br />
+can use either the VPP grammar<br />
+</p>
+
+<pre class="example">
+classify session hit-next 1 table-index 0 match l3 ip4 dst 48.0.0.0 opaque-index 42
+classify session hit-next 1 table-index 0 match l3 ip4 dst 16.0.0.0 opaque-index 42
+</pre>
+
+<p>
+or use raw values to specific classifier.<br />
+</p>
+
+<pre class="example">
+classify session hit-next 1 table-index 0 match hex 00000000000000000000000008000000000000000000001100000000000030000000003500350000000000000000000000000000000000000000000000000000 opaque-index 42
+classify session hit-next 1 table-index 0 match hex 00000000000000000000000008000000000000000000001100000000000010000000003500350000000000000000000000000000000000000000000000000000 opaque-index 42
+</pre>
+
+<p>
+The parameter 'hit-index' indicates the next graph node for any packets that hit<br />
+the classifier. Please note the value here '1' is not the graph node index, it<br />
+is the next node index.<br />
+</p>
+
+<p>
+The parameter 'opaque-index' allows you to add meta data to the packets that match<br />
+the classifier, this information may be used further down the pipeline.<br />
+</p>
+
+<p>
+You can then enable classifiers on a given interface as follows.<br />
+</p>
+
+<pre class="example">
+set interface input acl intfc FortyGigabitEthernetca/0/0 ip4-table 0
+set interface input acl intfc FortyGigabitEthernetb1/0/0 ip4-table 0
+</pre>

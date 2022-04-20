@@ -5,6 +5,7 @@
 ---
 layout: default
 title: Guide to ACLs on FD.io VPP
+tags: fd.io vpp acls
 ---
 #+END_EXPORT
 
@@ -27,8 +28,7 @@ from the FD.io CSIT performance report.
 | [[The FD.io VPP ACL Plugin]] | Lowest                  | Match on restricted L2-L4 fields, stateful & stateless               |
 | [[FD.io VPP COP]]            | Highest (software only) | Match on Layer 3 IPs, stateless                                      |
 | [[FD.io VPP Flow]]           | Highest (accelerated)   | Match on restricted L2-L4 fields, stateless, limited number of flows |
-| [[FD.io Classifiers]]        | TBD                     | Match on any field in the first 80 bytes, TBD                        |
-
+| [[FD.io Classifiers]]        | -                       | More information in [[attachment:2022-04-19-fdio-vpp-classifiers.org][this update]].                                     |
 
 * FD.io VPP ACLs Options
 ** The FD.io VPP ACL Plugin

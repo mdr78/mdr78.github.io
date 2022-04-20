@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Guide to ACLs on FD.io VPP
-tags: fd.io vpp
+tags: fd.io vpp acls
 ---
 
 <p>
@@ -15,13 +15,13 @@ depending on what you are looking to do and your performance expectations.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org00f6a8e">Summary (TL;DR)</a></li>
-<li><a href="#org087529f">FD.io VPP ACLs Options</a>
+<li><a href="#org7b562fe">Summary (TL;DR)</a></li>
+<li><a href="#orge7e32c3">FD.io VPP ACLs Options</a>
 <ul>
-<li><a href="#org2015fbc">The FD.io VPP ACL Plugin</a></li>
-<li><a href="#org228ff80">FD.io VPP COP</a></li>
-<li><a href="#orgac2b0d8">FD.io VPP Flow</a></li>
-<li><a href="#org04df440">FD.io Classifiers</a></li>
+<li><a href="#orgeffd48a">The FD.io VPP ACL Plugin</a></li>
+<li><a href="#org9f53704">FD.io VPP COP</a></li>
+<li><a href="#org2702aaf">FD.io VPP Flow</a></li>
+<li><a href="#orgd1a0b45">FD.io Classifiers</a></li>
 </ul>
 </li>
 </ul>
@@ -36,9 +36,9 @@ and performance is accurate for <a href="https://git.fd.io/vpp/tag/?h=v19.04">FD
 from the FD.io CSIT performance report.
 </p>
 
-<div id="outline-container-org00f6a8e" class="outline-2">
-<h2 id="org00f6a8e">Summary (TL;DR)</h2>
-<div class="outline-text-2" id="text-org00f6a8e">
+<div id="outline-container-org7b562fe" class="outline-2">
+<h2 id="org7b562fe">Summary (TL;DR)</h2>
+<div class="outline-text-2" id="text-org7b562fe">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -57,41 +57,40 @@ from the FD.io CSIT performance report.
 </tr>
 
 <tr>
-<td class="org-left"><a href="#org2015fbc">The FD.io VPP ACL Plugin</a></td>
+<td class="org-left"><a href="#orgeffd48a">The FD.io VPP ACL Plugin</a></td>
 <td class="org-left">Lowest</td>
 <td class="org-left">Match on restricted L2-L4 fields, stateful &amp; stateless</td>
 </tr>
 
 <tr>
-<td class="org-left"><a href="#org228ff80">FD.io VPP COP</a></td>
+<td class="org-left"><a href="#org9f53704">FD.io VPP COP</a></td>
 <td class="org-left">Highest (software only)</td>
 <td class="org-left">Match on Layer 3 IPs, stateless</td>
 </tr>
 
 <tr>
-<td class="org-left"><a href="#orgac2b0d8">FD.io VPP Flow</a></td>
+<td class="org-left"><a href="#org2702aaf">FD.io VPP Flow</a></td>
 <td class="org-left">Highest (accelerated)</td>
 <td class="org-left">Match on restricted L2-L4 fields, stateless, limited number of flows</td>
 </tr>
 
 <tr>
-<td class="org-left">FD.io Classifiers</td>
-<td class="org-left">TBD</td>
-<td class="org-left">Match on any field in the first 80 bytes, TBD</td>
+<td class="org-left"><a href="#orgd1a0b45">FD.io Classifiers</a></td>
+<td class="org-left">-</td>
+<td class="org-left">More information in <a href="{% post_url 2022-04-19-fdio-vpp-classifiers %}">this update</a>.</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 
-
-<div id="outline-container-org087529f" class="outline-2">
-<h2 id="org087529f">FD.io VPP ACLs Options</h2>
-<div class="outline-text-2" id="text-org087529f">
+<div id="outline-container-orge7e32c3" class="outline-2">
+<h2 id="orge7e32c3">FD.io VPP ACLs Options</h2>
+<div class="outline-text-2" id="text-orge7e32c3">
 </div>
-<div id="outline-container-org2015fbc" class="outline-3">
-<h3 id="org2015fbc">The FD.io VPP ACL Plugin</h3>
-<div class="outline-text-3" id="text-org2015fbc">
+<div id="outline-container-orgeffd48a" class="outline-3">
+<h3 id="orgeffd48a">The FD.io VPP ACL Plugin</h3>
+<div class="outline-text-3" id="text-orgeffd48a">
 <p>
 The plugin was originally developed as part of FD.io VPP and OpenStack
 integration. The plugin needs to be enabled on specific interfaces. 
@@ -99,27 +98,26 @@ integration. The plugin needs to be enabled on specific interfaces.
 </div>
 
 <ul class="org-ul">
-<li><a id="org21d72a3"></a>Supports stateful and stateless ACLs on &#x2026;<br />
+<li><a id="orgfd7f02f"></a>Supports stateful and stateless ACLs on &#x2026;<br />
 <ul class="org-ul">
-<li><a id="org6b862a1"></a>MACs<br /></li>
-<li><a id="orga239029"></a>IPS<br /></li>
-<li><a id="orgbda4288"></a>UDP Ports<br /></li>
-<li><a id="org6f3e2d4"></a>TCP Ports &amp; Flags<br /></li>
-<li><a id="org05c712e"></a>ICMP Messages<br /></li>
+<li><a id="org09815b4"></a>MACs<br /></li>
+<li><a id="org7816815"></a>IPS<br /></li>
+<li><a id="org8e1dcc9"></a>UDP Ports<br /></li>
+<li><a id="org1c2e7e9"></a>TCP Ports &amp; Flags<br /></li>
+<li><a id="org0a6ca6d"></a>ICMP Messages<br /></li>
 </ul>
 </li>
-
-<li><a id="org98dc858"></a>Directional<br />
+<li><a id="orge6d276a"></a>Directional<br />
 <ul class="org-ul">
-<li><a id="orgccef062"></a>Input ACLs<br />
-<div class="outline-text-8" id="text-orgccef062">
+<li><a id="orgebc4738"></a>Input ACLs<br />
+<div class="outline-text-8" id="text-orgebc4738">
 <p>
 Run before the IP flow classification.
 </p>
 </div>
 </li>
-<li><a id="org1b6bb7d"></a>Output ACLs<br />
-<div class="outline-text-8" id="text-org1b6bb7d">
+<li><a id="org6c0869d"></a>Output ACLs<br />
+<div class="outline-text-8" id="text-org6c0869d">
 <p>
 Run before interface output.
 </p>
@@ -127,28 +125,27 @@ Run before interface output.
 </li>
 </ul>
 </li>
-
-<li><a id="org280fdcf"></a>Actions<br />
+<li><a id="orgd0a67e3"></a>Actions<br />
 <ul class="org-ul">
-<li><a id="org3e7797e"></a>Permit (stateless)<br /></li>
-<li><a id="org364f863"></a>Drop (stateful)<br /></li>
-<li><a id="org7a8800d"></a>Permit+Reflect (stateful)<br /></li>
+<li><a id="org26f0a39"></a>Permit (stateless)<br /></li>
+<li><a id="org397d475"></a>Drop (stateful)<br /></li>
+<li><a id="org3dd03b7"></a>Permit+Reflect (stateful)<br /></li>
 </ul>
 </li>
 
-<li><a id="orgb9ef652"></a>Stateful (sf)<br />
+<li><a id="org82c4b3f"></a>Stateful (sf)<br />
 <ul class="org-ul">
-<li><a id="orgc452f66"></a>Actions: permit+reflect<br /></li>
-<li><a id="org4462186"></a>Most heavily optimized, as are the most common use case.<br /></li>
-<li><a id="orgaf8eb5a"></a>Faster because stateful uses a flow cache, it means the ACL hit is<br />
-<div class="outline-text-8" id="text-orgaf8eb5a">
+<li><a id="orgba8d55a"></a>Actions: permit+reflect<br /></li>
+<li><a id="orgab0c712"></a>Most heavily optimized, as are the most common use case.<br /></li>
+<li><a id="org94818da"></a>Faster because stateful uses a flow cache, it means the ACL hit is<br />
+<div class="outline-text-8" id="text-org94818da">
 <p>
 only taken once, up front for the flow and then becomes just a look-up.
 </p>
 </div>
 </li>
-<li><a id="orgbb45829"></a>Uses more memory, less deterministic as the flow cache makes it more<br />
-<div class="outline-text-8" id="text-orgbb45829">
+<li><a id="org2e92ef8"></a>Uses more memory, less deterministic as the flow cache makes it more<br />
+<div class="outline-text-8" id="text-org2e92ef8">
 <p>
 susceptible to the effects of the memory hierarchy and locality.
 </p>
@@ -157,30 +154,30 @@ susceptible to the effects of the memory hierarchy and locality.
 </ul>
 </li>
 
-<li><a id="orga61fad4"></a>Stateless (sl)<br />
+<li><a id="org1dbd776"></a>Stateless (sl)<br />
 <ul class="org-ul">
-<li><a id="org6901f34"></a>Actions : permit, drop<br /></li>
-<li><a id="org31faa02"></a>Less optimized, less common use case.<br /></li>
-<li><a id="org3a76bda"></a>Slower as there is no flow-cache, every new packet incurs the same<br />
-<div class="outline-text-8" id="text-org3a76bda">
+<li><a id="orgc34a235"></a>Actions : permit, drop<br /></li>
+<li><a id="org40a53ea"></a>Less optimized, less common use case.<br /></li>
+<li><a id="orgf3c8e4e"></a>Slower as there is no flow-cache, every new packet incurs the same<br />
+<div class="outline-text-8" id="text-orgf3c8e4e">
 <p>
 amount ACL processing.
 </p>
 </div>
 </li>
-<li><a id="org8b8a46f"></a>Uses less memory, and are more deterministic (compared to stateful).<br /></li>
+<li><a id="orga98e1d2"></a>Uses less memory, and are more deterministic (compared to stateful).<br /></li>
 </ul>
 </li>
 </ul>
 
-<li><a id="org5b2c1d1"></a>Operational Data<br />
+<li><a id="org7b68961"></a>Operational Data<br />
 <ul class="org-ul">
-<li><a id="org9ecce31"></a>Input/Stateless<br />
-<div class="outline-text-5" id="text-org9ecce31">
+<li><a id="orga331668"></a>Input/Stateless<br />
+<div class="outline-text-5" id="text-orga331668">
 <p>
 Test Case: 10ge2p1x520-ethip4udp-ip4base-iacl1sl-10kflows-ndrpdr
 </p>
-<pre class="example">
+<pre class="example" id="org451b310">
 DUT1: 
 Thread 0 vpp_main (lcore 1) 
 Time 3.8, average vectors/node 0.00, last 128 main loops 0.00 per node 0.00 
@@ -215,12 +212,12 @@ unix-epoll-input                 polling                46               0      
 </pre>
 </div>
 </li>
-<li><a id="orgf8747a4"></a>Input/Stateful<br />
-<div class="outline-text-5" id="text-orgf8747a4">
+<li><a id="org20b6eab"></a>Input/Stateful<br />
+<div class="outline-text-5" id="text-org20b6eab">
 <p>
 Test Case: 64b-1t1c-ethip4udp-ip4base-iacl1sf-10kflows-ndrpdr
 </p>
-<pre class="example">
+<pre class="example" id="org4b62b50">
 DUT1: 
 Thread 0 vpp_main (lcore 1) 
 Time 3.9, average vectors/node 0.00, last 128 main loops 0.00 per node 0.00 
@@ -258,12 +255,12 @@ unix-epoll-input                 polling                57               0      
 </pre>
 </div>
 </li>
-<li><a id="orga228d78"></a>Output/Stateless<br />
-<div class="outline-text-5" id="text-orga228d78">
+<li><a id="org4e709ed"></a>Output/Stateless<br />
+<div class="outline-text-5" id="text-org4e709ed">
 <p>
 Test Case: 64b-1t1c-ethip4udp-ip4base-oacl10sl-10kflows-ndrpdr
 </p>
-<pre class="example">
+<pre class="example" id="orgb13c3c8">
 DUT1: 
  Thread 0 vpp_main (lcore 1) 
  Time 3.8, average vectors/node 0.00, last 128 main loops 0.00 per node 0.00 
@@ -299,12 +296,12 @@ DUT1:
 </pre>
 </div>
 </li>
-<li><a id="org0eecedd"></a>Output/Stateful<br />
-<div class="outline-text-5" id="text-org0eecedd">
+<li><a id="orgfe9de17"></a>Output/Stateful<br />
+<div class="outline-text-5" id="text-orgfe9de17">
 <p>
 Test Case: 64b-1t1c-ethip4udp-ip4base-oacl10sf-10kflows-ndrpdr
 </p>
-<pre class="example">
+<pre class="example" id="orge298bcb">
 DUT1: 
  Thread 0 vpp_main (lcore 1) 
  Time 3.8, average vectors/node 0.00, last 128 main loops 0.00 per node 0.00 
@@ -345,8 +342,8 @@ DUT1:
 </li>
 </ul>
 </li>
-<li><a id="org49bb639"></a>Performance<br />
-<div class="outline-text-4" id="text-org49bb639">
+<li><a id="org60872c2"></a>Performance<br />
+<div class="outline-text-4" id="text-org60872c2">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -386,20 +383,20 @@ DUT1:
 </div>
 
 <ul class="org-ul">
-<li><a id="org078d81f"></a>Input ACLS (SKX)<br />
-<div class="outline-text-5" id="text-org078d81f">
+<li><a id="org3056fee"></a>Input ACLS (SKX)<br />
+<div class="outline-text-5" id="text-org3056fee">
 
-<div class="figure">
+<div id="org2cdd8e8" class="figure">
 <p><img src="../../../images/acls/64b-2t1c-features-iacl.png" alt="64b-2t1c-features-iacl.png" />
 </p>
 </div>
 </div>
 </li>
 
-<li><a id="orge0edec0"></a>Output ACLs (HSW)<br />
-<div class="outline-text-5" id="text-orge0edec0">
+<li><a id="org3102540"></a>Output ACLs (HSW)<br />
+<div class="outline-text-5" id="text-org3102540">
 
-<div class="figure">
+<div id="org28f30c3" class="figure">
 <p><img src="../../../images/acls/64b-1t1c-features-oacl.png" alt="64b-1t1c-features-oacl.png" />
 </p>
 </div>
@@ -408,13 +405,13 @@ DUT1:
 </ul>
 </li>
 
-<li><a id="org7157e9a"></a>Configuration<br />
-<div class="outline-text-4" id="text-org7157e9a">
+<li><a id="orgf8fb8de"></a>Configuration<br />
+<div class="outline-text-4" id="text-orgf8fb8de">
 <ul class="org-ul">
 <li><p>
 Stateful
 </p>
-<pre class="example">
+<pre class="example" id="orga90d6e6">
 ip_add_del_route 20.20.20.0/24 via 1.1.1.2  sw_if_index 1 resolve-attempts 10 count 1     
 acl_add_replace  ipv4 permit src 30.30.30.1/32 dst 40.40.40.1/32 sport 1000 dport 1000, ipv4 permit+reflect src 10.10.10.0/24, ipv4 permit+reflect src 20.20.20.0/24        
 acl_interface_set_acl_list sw_if_index 2 input 0 
@@ -423,7 +420,7 @@ acl_interface_set_acl_list sw_if_index 1 input 0
 <li><p>
 Stateless
 </p>
-<pre class="example">
+<pre class="example" id="orgc9d328f">
 ip_add_del_route 20.20.20.0/24 via 1.1.1.2  sw_if_index 1 resolve-attempts 10 count 1     
 acl_add_replace  ipv4 permit src 30.30.30.1/32 dst 40.40.40.1/32 sport 1000 dport 1000, ipv4 permit src 10.10.10.0/24, ipv4 permit src 20.20.20.0/24        
 acl_interface_set_acl_list sw_if_index 2 input 0 
@@ -433,19 +430,19 @@ acl_interface_set_acl_list sw_if_index 1 input 0
 </div>
 </li>
 
-<li><a id="org8fb8471"></a>Links<br />
+<li><a id="org3ec5d8a"></a>Links<br />
 <ul class="org-ul">
-<li><a id="org6d44a66"></a><a href="https://wiki.fd.io/view/VPP/SecurityGroups">FD.io Security Groups overview</a><br /></li>
-<li><a id="org3da64a4"></a><a href="https://packetlife.net/blog/2008/nov/25/reflexive-access-lists/">Reflexive Access Control Lists</a><br /></li>
-<li><a id="orgaeb93fc"></a><a href="http://stdio.be/blog/2017-12-09-Debugging-VPP-MACIP-ACLs/">Andrew Yuort's Blog on ACLs</a><br /></li>
+<li><a id="org0501b94"></a><a href="https://wiki.fd.io/view/VPP/SecurityGroups">FD.io Security Groups overview</a><br /></li>
+<li><a id="orga2ca63f"></a><a href="https://packetlife.net/blog/2008/nov/25/reflexive-access-lists/">Reflexive Access Control Lists</a><br /></li>
+<li><a id="org1bc3e1d"></a><a href="http://stdio.be/blog/2017-12-09-Debugging-VPP-MACIP-ACLs/">Andrew Yuort's Blog on ACLs</a><br /></li>
 </ul>
 </li>
 </ul>
 </div>
 
-<div id="outline-container-org228ff80" class="outline-3">
-<h3 id="org228ff80">FD.io VPP COP</h3>
-<div class="outline-text-3" id="text-org228ff80">
+<div id="outline-container-org9f53704" class="outline-3">
+<h3 id="org9f53704">FD.io VPP COP</h3>
+<div class="outline-text-3" id="text-org9f53704">
 <p>
 IPv4/IPv6 white-lists using the FD.io VPP FIB, with support for multiple
 nested white-lists. These form of white-listing is called COP in FD.io VPP,
@@ -457,46 +454,46 @@ Design notes:
 </p>
 </div>
 <ul class="org-ul">
-<li><a id="orge726f92"></a>The cop graph nodes (input &amp; white-list) make reuse of the FD.io VPP FIB<br />
-<div class="outline-text-5" id="text-orge726f92">
+<li><a id="orgfa0e6a3"></a>The cop graph nodes (input &amp; white-list) make reuse of the FD.io VPP FIB<br />
+<div class="outline-text-5" id="text-orgfa0e6a3">
 <p>
 2.0 implementation. Essentially a successful lookup in the FIB, indicates
 that a packet has been white-listed and may be forwarded.
 </p>
 </div>
 </li>
-<li><a id="org8d4ac5b"></a>cop-input: Determines if the frame is IPv4 or IPv6, and forwards to<br />
-<div class="outline-text-5" id="text-org8d4ac5b">
+<li><a id="org5a7e99d"></a>cop-input: Determines if the frame is IPv4 or IPv6, and forwards to<br />
+<div class="outline-text-5" id="text-org5a7e99d">
 <p>
 ipN-copwhitelist graph node.
 </p>
 </div>
 </li>
-<li><a id="orge86b15c"></a>ipN-copwhitelist: uses the ip4_fib_[mtrie,lookup] functions to confirm the<br />
-<div class="outline-text-5" id="text-orge86b15c">
+<li><a id="orgbb5d2c1"></a>ipN-copwhitelist: uses the ip4_fib_[mtrie,lookup] functions to confirm the<br />
+<div class="outline-text-5" id="text-orgbb5d2c1">
 <p>
 packet's ip matches a route in the white-list fib.
 </p>
 </div>
 <ul class="org-ul">
-<li><a id="org3f0f5ad"></a>Match: if it matches, it is then either sent to the next whitelist or to<br />
-<div class="outline-text-6" id="text-org3f0f5ad">
+<li><a id="org34be47f"></a>Match: if it matches, it is then either sent to the next whitelist or to<br />
+<div class="outline-text-6" id="text-org34be47f">
 <p>
 the ip layer.
 </p>
 </div>
 </li>
-<li><a id="org247682f"></a>No Match: if it there is not match, it is sent to error-drop.<br /></li>
+<li><a id="org8e76b9e"></a>No Match: if it there is not match, it is sent to error-drop.<br /></li>
 </ul>
 </li>
 </ul>
 
-<li><a id="orgd34d348"></a>Operational Data<br />
-<div class="outline-text-4" id="text-orgd34d348">
+<li><a id="org8487fb7"></a>Operational Data<br />
+<div class="outline-text-4" id="text-org8487fb7">
 <p>
 Note: the double-pass of the ip4-lookup and ip4-rewrite.
 </p>
-<pre class="example">
+<pre class="example" id="org5915bf0">
 DUT1: 
  Thread 0 vpp_main (lcore 1) 
  Time 3.9, average vectors/node 0.00, last 128 main loops 0.00 per node 0.00 
@@ -533,8 +530,8 @@ DUT1:
 </pre>
 </div>
 </li>
-<li><a id="org4f662d4"></a>Performance<br />
-<div class="outline-text-4" id="text-org4f662d4">
+<li><a id="org40e0fe1"></a>Performance<br />
+<div class="outline-text-4" id="text-org40e0fe1">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -567,20 +564,20 @@ DUT1:
 </table>
 
 
-<div class="figure">
+<div id="org3582210" class="figure">
 <p><img src="../../../images/acls/ip4-3n-skx-x710-64b-2t1c-features-ndr.png" alt="ip4-3n-skx-x710-64b-2t1c-features-ndr.png" />
 </p>
 </div>
 </div>
 </li>
 
-<li><a id="org6aa6541"></a>Configuration<br />
-<div class="outline-text-4" id="text-org6aa6541">
+<li><a id="org49a565d"></a>Configuration<br />
+<div class="outline-text-4" id="text-org49a565d">
 <p>
 Note: a new VRF 1 is created which holds the whitelist, which then applied to
 the interface 1.
 </p>
-<pre class="example">
+<pre class="example" id="org5e3ede8">
 ip_add_del_route 10.10.10.0/24 via 1.1.1.1  sw_if_index 2 resolve-attempts 10 count 1     
 ip_table_add_del table 1  
 ip_add_del_route 20.20.20.0/24  vrf 1  resolve-attempts 10 count 1    local 
@@ -590,17 +587,17 @@ cop_interface_enable_disable sw_if_index 1
 </div>
 </li>
 
-<li><a id="orgcea7ebb"></a>Links<br />
+<li><a id="orgef4472d"></a>Links<br />
 <ul class="org-ul">
-<li><a id="orgfb28a0b"></a><a href="https://wiki.fd.io/images/7/71/FIB_2.0_-_Hierarchical,_Protocol_Independent..pdf">FIB	2.0:	Hierarchical,	Protocol	Independent.</a><br /></li>
+<li><a id="org52ba454"></a><a href="https://wiki.fd.io/images/7/71/FIB_2.0_-_Hierarchical%2C_Protocol_Independent..pdf">FIB	2.0:	Hierarchical,	Protocol	Independent.</a><br /></li>
 </ul>
 </li>
 </ul>
 </div>
 
-<div id="outline-container-orgac2b0d8" class="outline-3">
-<h3 id="orgac2b0d8">FD.io VPP Flow</h3>
-<div class="outline-text-3" id="text-orgac2b0d8">
+<div id="outline-container-org2702aaf" class="outline-3">
+<h3 id="org2702aaf">FD.io VPP Flow</h3>
+<div class="outline-text-3" id="text-org2702aaf">
 <p>
 FD.io VPP Flow adds the ability for FD.io VPP to support matching of flows and
 taking an associated action. This information is then used to program hardware
@@ -610,41 +607,41 @@ Flow Director technology on the Intel® Ethernet Controller X710/XXV710/XL710.
 </div>
 
 <ul class="org-ul">
-<li><a id="org5955849"></a>Supports<br />
+<li><a id="orgc583f84"></a>Supports<br />
 <ul class="org-ul">
-<li><a id="orgb5ad238"></a>Actions<br />
+<li><a id="org59e8bc2"></a>Actions<br />
 <ul class="org-ul">
-<li><a id="org78766f7"></a>Count: don't now what this does, presume it count's matches.<br /></li>
-<li><a id="org92cd820"></a>Mark: Associate a matched flow with arbitrary data such as vxlan tunnel,<br />
-<div class="outline-text-8" id="text-org92cd820">
+<li><a id="orgef70cc5"></a>Count: don't now what this does, presume it count's matches.<br /></li>
+<li><a id="orge069a52"></a>Mark: Associate a matched flow with arbitrary data such as vxlan tunnel,<br />
+<div class="outline-text-8" id="text-orge069a52">
 <p>
 for a lookup in the redirect graph node.
 </p>
 </div>
 </li>
-<li><a id="org19c6d2b"></a>Buffer Advance: Can be used advance to an encapsulated ethernet or ip<br />
-<div class="outline-text-8" id="text-org19c6d2b">
+<li><a id="org9431fd0"></a>Buffer Advance: Can be used advance to an encapsulated ethernet or ip<br />
+<div class="outline-text-8" id="text-org9431fd0">
 <p>
 header.
 </p>
 </div>
 </li>
-<li><a id="org1e6e362"></a>Redirect to node: When you see a packet from flow xyz, the next node in<br />
-<div class="outline-text-8" id="text-org1e6e362">
+<li><a id="org7c01082"></a>Redirect to node: When you see a packet from flow xyz, the next node in<br />
+<div class="outline-text-8" id="text-org7c01082">
 <p>
 FD.io VPP is the indicated graph node. 
 </p>
 </div>
 </li>
-<li><a id="org84e0f5e"></a>Redirect to queue: When you see a packet from flow xyz, is to redirect<br />
-<div class="outline-text-8" id="text-org84e0f5e">
+<li><a id="orgead74ee"></a>Redirect to queue: When you see a packet from flow xyz, is to redirect<br />
+<div class="outline-text-8" id="text-orgead74ee">
 <p>
 to rx queue n.
 </p>
 </div>
 </li>
-<li><a id="org5134922"></a>Drop: When you see a packet from flow xyz, drop the packet (next node is<br />
-<div class="outline-text-8" id="text-org5134922">
+<li><a id="org5acc2c8"></a>Drop: When you see a packet from flow xyz, drop the packet (next node is<br />
+<div class="outline-text-8" id="text-org5acc2c8">
 <p>
 error drop).
 </p>
@@ -656,24 +653,24 @@ Design Notes:
 </li>
 </ul>
 </li>
-<li><a id="org806b77a"></a>Currently the only place in FD.io VPP that this is used, is to accelerate<br />
-<div class="outline-text-6" id="text-org806b77a">
+<li><a id="orgad844f9"></a>Currently the only place in FD.io VPP that this is used, is to accelerate<br />
+<div class="outline-text-6" id="text-orgad844f9">
 <p>
 VXLAN bypassing the Ethernet and IP Layers.
 </p>
 </div>
 </li>
 
-<li><a id="org3adeda4"></a>Flow uses DPDK rte_flow API under the hood for those network interfaces<br />
-<div class="outline-text-6" id="text-org3adeda4">
+<li><a id="org7d97005"></a>Flow uses DPDK rte_flow API under the hood for those network interfaces<br />
+<div class="outline-text-6" id="text-org7d97005">
 <p>
 programmed through DPDK.
 </p>
 </div>
 </li>
 
-<li><a id="orgef21da0"></a>Redirect to node: worth remember that if you are bypassing a graph, you<br />
-<div class="outline-text-6" id="text-orgef21da0">
+<li><a id="org4330ce0"></a>Redirect to node: worth remember that if you are bypassing a graph, you<br />
+<div class="outline-text-6" id="text-org4330ce0">
 <p>
 are bypassing all the checks in the graph node, e.e time-to-live, crcs and
 the like.
@@ -683,44 +680,44 @@ the like.
 </ul>
 </li>
 
-<li><a id="org11f392c"></a>Operational Data<br />
-<div class="outline-text-4" id="text-org11f392c">
+<li><a id="org8cbc74a"></a>Operational Data<br />
+<div class="outline-text-4" id="text-org8cbc74a">
 <p>
 FD.io CSIT numbers for VXLan do not use FD.io Flow support.
 </p>
 </div>
 </li>
-<li><a id="orgdc4b0cd"></a>Performance<br />
-<div class="outline-text-4" id="text-orgdc4b0cd">
+<li><a id="org1e0425d"></a>Performance<br />
+<div class="outline-text-4" id="text-org1e0425d">
 <p>
 FD.io CSIT numbers for VXLan do not use FD.io Flow support. 
 </p>
 </div>
 </li>
-<li><a id="orgfc2350a"></a>Configuration<br />
+<li><a id="org2acce63"></a>Configuration<br />
 <ul class="org-ul">
-<li><a id="org1f76af1"></a><a href="https://git.fd.io/vpp/tree/src/vnet/flow/flow.h">Flow API</a><br /></li>
+<li><a id="orgd7f9f1f"></a><a href="https://git.fd.io/vpp/tree/src/vnet/flow/flow.h">Flow API</a><br /></li>
 </ul>
 </li>
 </ul>
 </div>
 
-<div id="outline-container-org04df440" class="outline-3">
-<h3 id="org04df440">FD.io Classifiers</h3>
-<div class="outline-text-3" id="text-org04df440">
+<div id="outline-container-orgd1a0b45" class="outline-3">
+<h3 id="orgd1a0b45">FD.io Classifiers</h3>
+<div class="outline-text-3" id="text-orgd1a0b45">
 <p>
 The most flexible form of ACLs in FD.io VPP. 
 </p>
 </div>
 
 <ul class="org-ul">
-<li><a id="org63f30b4"></a>Configuration<br />
-<div class="outline-text-4" id="text-org63f30b4">
+<li><a id="orgdab3158"></a>Configuration<br />
+<div class="outline-text-4" id="text-orgdab3158">
 <p>
 Match an IPv6&#x2026;.
 </p>
 
-<pre class="example">
+<pre class="example" id="orgcc4ec2f">
 classify table mask l3 ip6 dst buckets 64
 classify session hit-next 0 table-index 0 match l3 ip6 dst 2001:db8:1::2 opaque-index 42
 set interface l2 input classify intfc host-s0_s1 ip6-table 0
@@ -728,12 +725,12 @@ set interface l2 input classify intfc host-s0_s1 ip6-table 0
 </div>
 </li>
 
-<li><a id="org81d8649"></a>Links<br />
+<li><a id="org679d326"></a>Links<br />
 <ul class="org-ul">
-<li><a id="orgb31c9e9"></a><a href="https://wiki.fd.io/view/VPP/SecurityGroups#Existing_functionality">Overview of classifers</a><br /></li>
-<li><a id="orgf6b1756"></a><a href="https://wiki.fd.io/view/VPP/Introduction_To_N-tuple_Classifiers">FD.io VPP Classifiers Overview</a><br /></li>
-<li><a id="org6b7987b"></a><a href="https://docs.fd.io/vpp/19.04/clicmd_src_vnet_classify.html">FD.io VPP Classifiers CLI</a><br /></li>
-<li><a id="orgec6b9c4"></a><a href="http://stdio.be/vpp/t/aytest-bridge-tap-py.txt">Sample Code from Andrew Yourt</a><br /></li>
+<li><a id="orgf52a262"></a><a href="https://wiki.fd.io/view/VPP/SecurityGroups#Existing_functionality">Overview of classifers</a><br /></li>
+<li><a id="org2695236"></a><a href="https://wiki.fd.io/view/VPP/Introduction_To_N-tuple_Classifiers">FD.io VPP Classifiers Overview</a><br /></li>
+<li><a id="org74bf74c"></a><a href="https://docs.fd.io/vpp/19.04/clicmd_src_vnet_classify.html">FD.io VPP Classifiers CLI</a><br /></li>
+<li><a id="org0dcb37f"></a><a href="http://stdio.be/vpp/t/aytest-bridge-tap-py.txt">Sample Code from Andrew Yourt</a><br /></li>
 </ul>
 </li>
 </ul>

@@ -1,0 +1,87 @@
+#+STARTUP: showall indentX
+#+STARTUP: hidestars
+#+OPTIONS: num:nil tags:nil toc:nil timestamps:nil \n:t
+#+BEGIN_EXPORT html
+---
+layout: default
+title: FD.io VPP Classifiers
+date: 2022-04-19 12:00:00 +0000
+tags: fd.io vpp acls
+---
+#+END_EXPORT
+
+Sometime ago, I wrote [[attachment:2019-07-24-fdio-vpp-acls.org][a guide]] covering the four different methods of
+implementing ACLs with FD.io VPP that I was aware of. At that time, I wasn't
+that familar with VPP classifiers, so I left them mostly TBD. 
+
+Recently I spent quiet a bit of time optimizing the performance of VPP
+classifiers with the [[https://en.wikipedia.org/wiki/AVX-512][AVX-512]] instruction-set. Although I am not going to get
+into a discussion on the relative performance of classifers compared to the
+other options discussed in this post. 
+
+Instead, I'll provide a brief overview how they work and provide enough
+information to get you started. Classifiers are stateless, and are based on a
+mask and match, you define the fields you want to match on in the mask and then
+you define the values you want to match against.
+
+The *mask* is defined when the classifier table is created, and allows you to
+match anywhere on the first 80 bytes of packet. You can use either the VPP
+grammar for describing mask fields.
+
+#+BEGIN_SRC
+classify table mask l3 ip4 dst buckets 2 memory-size 2M
+#+END_SRC
+
+or use a raw bitmask that indicates the classifier length and which bits
+should be matched on.
+
+#+BEGIN_SRC
+classify table miss-next 0 mask hex 000000000000000000000000ffff000000000000000000ff000000000000ffffffffffffffff0000000000000000000000000000000000000000000000000000 buckets 2 memory-size 2M skip 0
+#+END_SRC
+
+The parameter 'skip' allows you to indicate that a given number of bytes should
+be skipped from the head of the packet, so for instance if you want to skip the
+Ethernet Header entirely you could specify 14 bytes here, this saves you
+matching against bytes to are not interested in.
+
+The parameters 'buckets <n>' and 'memory-size <nM>' allows you to size the
+classifier table, under the covers classifiers are implemented in a very similar
+way to the VPP bihash. You will need to estimate how many buckets you need in
+advance, this is key in reducing search time and sizing memory accordingly.
+
+The parameter 'miss-next' allows you to indicate the graph node to which packets
+that miss all classifiers in the table should go to. Please note the value here
+'0' is not the graph node index, it is the next node index.
+
+The parameter 'next-table-index' allows you to nest classifiers tables, such
+that a packet that misses one table, may still match on another.
+
+The matches are defined in classifier table 'session' entries, and the match
+length and values must match that of the mask. As with the table creation you
+can use either the VPP grammar
+
+#+BEGIN_SRC
+classify session hit-next 1 table-index 0 match l3 ip4 dst 48.0.0.0 opaque-index 42
+classify session hit-next 1 table-index 0 match l3 ip4 dst 16.0.0.0 opaque-index 42
+#+END_SRC
+
+or use raw values to specific classifier.
+
+#+BEGIN_SRC
+classify session hit-next 1 table-index 0 match hex 00000000000000000000000008000000000000000000001100000000000030000000003500350000000000000000000000000000000000000000000000000000 opaque-index 42
+classify session hit-next 1 table-index 0 match hex 00000000000000000000000008000000000000000000001100000000000010000000003500350000000000000000000000000000000000000000000000000000 opaque-index 42
+#+END_SRC
+
+The parameter 'hit-index' indicates the next graph node for any packets that hit
+the classifier. Please note the value here '1' is not the graph node index, it
+is the next node index.
+
+The parameter 'opaque-index' allows you to add meta data to the packets that match
+the classifier, this information may be used further down the pipeline. 
+
+You can then enable classifiers on a given interface as follows.
+
+#+BEGIN_SRC
+set interface input acl intfc FortyGigabitEthernetca/0/0 ip4-table 0
+set interface input acl intfc FortyGigabitEthernetb1/0/0 ip4-table 0
+#+END_SRC
