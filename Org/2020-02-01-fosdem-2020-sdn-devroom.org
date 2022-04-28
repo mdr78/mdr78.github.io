@@ -1,0 +1,23 @@
+#+STARTUP: showall indentX
+#+STARTUP: hidestars
+#+OPTIONS: num:nil tags:nil toc:nil timestamps:nil \n:t
+#+BEGIN_EXPORT html
+---
+layout: default_gallery
+title: FOSDEM 2020 SDN Devroom
+date: 2020-02-01 00:00:00 +0000
+tags: fosdem devroom
+imagedir: images/fosdem2020devroom
+---
+#+END_EXPORT
+
+Awesome day in the [[https://archive.fosdem.org/2020/schedule/track/software_defined_networking/][FOSDEM'20 SDN Devroom]], with some awesome speakers.
+
+Kudos to Magnus Karlsson, Sylvain Baubeau, Sylvain Afchain, Emma Foley,
+Krzysztof Kepka, Quentin Monnet, Michal Rostecki, Swami Vasudevan, Stephen
+Hemminger, Ilias Apalodimas, Lorenzo Bianconi, Bryan Boreham, Ahmed Abdelsalam,
+Miroslaw Walukiewicz, Filip Gschwandtner, Daniel Bernier, Yolanda Robla Mota,
+Ricardo Noriega, Nathan Skrzypczak, Aloys Augustin, Ciara Loftus, Kevin Laatz,
+Bruce Richardson, Harry van Haaren and Max Rottenkolber for presenting.
+
+Photos from devroom below.
