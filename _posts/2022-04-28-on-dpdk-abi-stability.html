@@ -1,0 +1,51 @@
+---
+layout: default
+title: On ABI stability in open source software
+date: 2022-04-28 00:00:00 +0000
+tags: DPDK ABI
+---
+
+<p>
+I recently noted that I was the number #4 reviewer of code in the <a href="https://www.dpdk.org/blog/2021/11/30/dpdk-21-11-is-now-available/">DPDK 21.11 LTS</a><br />
+release. This is a direct result of my role as <a href="http://git.dpdk.org/dpdk/tree/MAINTAINERS">DPDK ABI mantainer</a>, responsible<br />
+for ensuring that DPDK releases remain backward compatible.<br />
+</p>
+
+<p>
+I found it a funny thing that I am seen to be doing more work on the LTS<br />
+releases, but the reality is that I do way more work on the minor releases.<br />
+Stable ABI's are like that, there ends up being way more work between major<br />
+releases ensuring that the minor releases remain compatible with the stable ABI.<br />
+</p>
+
+<p>
+In minor releases, you spend more time reviewing patches for potential gotcha's,<br />
+parsing <a href="https://sourceware.org/libabigail/">libabigail</a> warnings, providing advice, suggesting work-arounds and the<br />
+like. On the other hand, in the major LTS releases, a new ABI is declared, so<br />
+backward compatibility is less of an issue but you still need to ensure that APIs<br />
+are designed in a way that is easier to support over the long term.<br />
+</p>
+
+<p>
+Lots of developers use the LTS releases as an opportunity to contribute patches<br />
+that change the ABI, as there is no requirement to be backward compatible in the<br />
+LTS release, something that is harder on minor releases. So the net-net is that<br />
+there is a larger volume of patches on the LTS releases, but less work overall.<br />
+</p>
+
+<p>
+So what's the benefit for users, is it worth all the effort? &#x2026; absolutely.<br />
+What it means for consumers of DPDK is that it is easier to upgrade to newer<br />
+versions. They get all the benefits of bug fixes and new features when they<br />
+ugrade, without the headache of breaking their code.<br />
+</p>
+
+<p>
+I wrote a fairly comprehensive introduction to <a href="https://www.dpdk.org/blog/2019/10/10/why-is-abi-stability-important/">ABIs and why they are important</a>,<br />
+over on the <a href="https://www.dpdk.org/blog">DPDK blog</a>, it is a 10 minute read but a great introduction to ABIs<br />
+if you are unfamiliar with them. I also chaired a panel discussion and<br />
+co-presented with <a href="https://twitter.com/networkplumber">Stephen Hemminger</a> on the subject at <a href="https://youtu.be/9uR61KXaGb8">DPDK Userspace 2019</a>.<br />
+Finally after one year of stable DPDK ABIs, I wrote a <a href="https://www.dpdk.org/blog/2020/12/16/on-abi-stability-v20-in-review/">followup article</a> showing<br />
+how successful the community had become at stabilizing the ABI, and produced a<br />
+neat <a href="https://showterm.io/735e1f394eca5cf2f47b2#fast">ascii video</a> demonstrating ABI stability in action.<br />
+</p>
