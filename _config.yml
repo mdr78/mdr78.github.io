@@ -16,7 +16,7 @@ github_username: mdr78
 
 # Build settings
 markdown: kramdown
-exclude: [Org]
+exclude: [Org, scripts]
 
 whitelist: []
 plugins:

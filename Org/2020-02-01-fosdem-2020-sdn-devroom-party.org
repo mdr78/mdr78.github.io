@@ -1,0 +1,24 @@
+#+STARTUP: showall indentX
+#+STARTUP: hidestars
+#+OPTIONS: num:nil tags:nil toc:nil timestamps:nil \n:t
+#+BEGIN_EXPORT html
+---
+layout: default_gallery
+title: FOSDEM 2020 SDN Devroom Party
+date: 2020-02-01 00:00:00 +0000
+tags: fosdem beer
+imagedir: images/fosdem2020party
+---
+#+END_EXPORT
+
+[[https://archive.fosdem.org/2020][FOSDEM '20]] just before Covid hit Europe in 2020, was a pretty amazing
+experience. It felt almost as the calm before the coming storm, if it is
+possible to call FOSDEM calm.
+
+Ordinarly we'd get the speakers from SDN devroom together for a couple of beers
+at the [[https://mannekenpiscafe.be/eng.html][Manneken Pis Café]] after the conference, but was to be a special year. The
+Manneken Pis was being renovated but, thanks to some amazing work from [[https://monjalon.net/][Thomas
+Monjalon]] we landed in the [[https://roydespagne.be/fr/index.php][Roy D'Espange]] instead, it was awesome!
+
+As always thanks to all the speakers and Charles Eckel, Emma Foley and Thomas for
+all the hard work, great photos from the night below. 

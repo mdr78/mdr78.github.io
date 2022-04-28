@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+  {% include head.html %}
+
+  <body>
+
+    {% include header.html %}
+
+    <div class="page-content">
+      <div class="wrapper">
+        {{ content }}
+
+        {% include image-gallery.html folder=page.imagedir %}
+
+      <hr>
+      {% include post_tags.html %}
+      <br>
+      </div>
+    </div>
+
+    {% include footer.html %}
+
+  </body>
+
+</html>
