@@ -1,6 +1,7 @@
 ---
 layout: page
 title: About
+noheader: true
 permalink: /about/
 ---
 Linux enthusiast and software engineer, hacking on software networking

@@ -2,13 +2,15 @@
 <html>
 
   {% include head.html %}
-
   <body>
 
     {% include header.html %}
 
     <div class="page-content">
       <div class="wrapper">
+
+        {% unless page.noheader %}<h1 class="page-heading">{{ page.title }}</h1>{% endunless %}
+
         {{ content }}
 
       <hr>
