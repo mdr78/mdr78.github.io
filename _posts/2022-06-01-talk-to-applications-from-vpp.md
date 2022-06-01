@@ -38,21 +38,21 @@ applications**, **raw packet applications** and so on, at the expense of the
 hairpin through the kernel.  
 
 The special sauce here is in the current hairpin, the v1 version of this  
-interface would have used the kernel's venerable [AF<sub>PACKET</sub>](https://man7.org/linux/man-pages/man7/packet.7.html) interface to  
+interface would have used the kernel's venerable [AF_PACKET](https://man7.org/linux/man-pages/man7/packet.7.html) interface to  
 hairpin packet which wasn't known for speed. FD.io VPP's TAP v2 however uses  
-the kernel's [vhost<sub>net</sub> interface](https://www.redhat.com/en/blog/introduction-virtio-networking-and-vhost-net) instead, with FD.io VPP implementing a Virtio  
+the kernel's [vhost_net interface](https://www.redhat.com/en/blog/introduction-virtio-networking-and-vhost-net) instead, with FD.io VPP implementing a Virtio  
 endpoint to talk to the Kernel.  
 
-This is a more optimized interface compared to AF<sub>PACKET</sub>, with a rich  
+This is a more optimized interface compared to AF_PACKET, with a rich  
 feature-set borrowed from Virtualization, supporting both poll-mode and  
 interrupt-driven modes of operation, multiple queues for multi-core  
 deployments and so on.  
 
 # AF_XDP
 
-[AF<sub>XDP</sub>](https://www.kernel.org/doc/html/latest/networking/af_xdp.html) is the new API supported by the Kernel, and is similar to TAP v2 above  
-in that it can be used by FD.io VPP to hairpin packets to the Kernel. AF<sub>XDP</sub>  
-is very much seen as the successor to the Linux's AF<sub>PACKET</sub> interface.  
+[AF_XDP](https://www.kernel.org/doc/html/latest/networking/af_xdp.html) is the new API supported by the Kernel, and is similar to TAP v2 above  
+in that it can be used by FD.io VPP to hairpin packets to the Kernel. AF_XDP  
+is very much seen as the successor to the Linux's AF_PACKET interface.  
 
 Again, this means that any Linux networking application can be supported at  
 the expense of the hairpin through the kernel; **sockets based applications**,  
@@ -67,7 +67,7 @@ still be absent
 
 [LibVCL](https://git.fd.io/vpp/tree/src/vcl/) is designed for those use cases that want to support **sockets  
 applications** with FD.io VPP, but don't want to incur the expense of the  
-hairpin through the Linux Kernel necessitated by the TAP v2 and AF<sub>XDP</sub>  
+hairpin through the Linux Kernel necessitated by the TAP v2 and AF_XDP  
 approaches. Those are applications that <span class="underline">want</span> a sockets interface, but <span class="underline">don't  
 want</span> to talk through the kernel.  
 
