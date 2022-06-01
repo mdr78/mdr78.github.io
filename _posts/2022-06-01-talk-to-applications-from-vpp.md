@@ -48,7 +48,7 @@ feature-set borrowed from Virtualization, supporting both poll-mode and
 interrupt-driven modes of operation, multiple queues for multi-core  
 deployments and so on.  
 
-# AF<sub>XDP</sub>
+# AF_XDP
 
 [AF<sub>XDP</sub>](https://www.kernel.org/doc/html/latest/networking/af_xdp.html) is the new API supported by the Kernel, and is similar to TAP v2 above  
 in that it can be used by FD.io VPP to hairpin packets to the Kernel. AF<sub>XDP</sub>  

@@ -1,6 +1,6 @@
 #+STARTUP: showall indentX
 #+STARTUP: hidestars
-#+OPTIONS: num:nil tags:nil toc:nil timestamps:nil \n:t
+#+OPTIONS: num:nil tags:nil toc:nil timestamps:nil \n:t _:nil
 #+BEGIN_EXPORT html
 ---
 layout: default
