@@ -21,7 +21,7 @@ those files that are built just once.
 
 The result of this build system wizardry is that there may be multiple versions  
 of any given VPP graph node (called node variants) in the VPP fat binary, one  
-for `Skylake`, one for `Ice Lake` … you get the idea by now. When VPP starts-up  
+for **Skylake**, one for **Ice Lake** … you get the idea by now. When VPP starts-up  
 it looks at the micro-processor that it is running on, identifies the generation  
 of the micro-processor and selects then optimal variant of a graph node to run.  
 Unless you go digging into guts of FD.io VPP, you’ll should be oblivious that  
@@ -80,22 +80,22 @@ You can then change the variant that is being used at runtime, with the command
         ip4-classify (328)
 
 Different graph node variants support different micro-processor  
-instruction-sets, the `Skylake` variant supports [Intel® AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions), the `Ice Lake`  
-variant supports [Intel® AVX-512](https://en.wikipedia.org/wiki/AVX-512) and the `Haswell` variant supports [Intel®  
+instruction-sets, the **Skylake** variant supports [Intel® AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions), the **Ice Lake**  
+variant supports [Intel® AVX-512](https://en.wikipedia.org/wiki/AVX-512) and the **Haswell** variant supports [Intel®  
 SSE-4.2](https://en.wikipedia.org/wiki/SSE4). This gives the compiler the option of using these instruction-sets when  
 optimizing the variants. It also gives the Software Engineer the option to  
 handcraft micro-processor generation specific optimizations and have them  
 incorporated into specific graph node variants. These are wrapped in the MACROS  
-~ CLIB\_HAVE\_VEC256~, ~ CLIB\_HAVE\_VEC512~ and ~ CLIB\_HAVE\_VEC128~, which  
-correspond to `AVX2`, `AVX512` and `SSE4.2` respectively.  
+`CLIB_HAVE_VEC256`, `CLIB_HAVE_VEC512` and `CLIB_HAVE_VEC128`, which correspond  
+to **AVX2**, **AVX512** and **SSE4.2** respectively.  
 
 A good example of this pattern is the function [vlib\_get\_buffers\_with\_offset](https://git.fd.io/vpp/tree/src/vlib/buffer_funcs.h?id=542088597886df774e63f841166721deeffef1c1),  
 this function converts buffer indexes into buffer pointers. Note how the  
-\`AVX-512\` variant of [vlib\_get\_buffers\_with\_offset is wrapped in  
+**AVX-512** variant of [vlib\_get\_buffers\_with\_offset is wrapped in  
 \`CLIB\_HAVE\_VEC512\`. The variant](https://git.fd.io/vpp/tree/src/vlib/buffer_funcs.h?id=542088597886df774e63f841166721deeffef1c1) loads 8 buffer indexes at a time, and then  
 applies a vector shift, then vector adds the base address to calculate 8 buffer  
 addresses in parallel, before doing a parallel store of the 8 buffer addresses.  
-There are also `AVX2` and `SSE4.2` versions of this code, which gets called by  
+There are also **AVX2** and **SSE4.2** versions of this code, which gets called by  
 most graph nodes.  
 
 ```C
