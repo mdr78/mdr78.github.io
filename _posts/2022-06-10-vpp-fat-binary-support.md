@@ -13,22 +13,22 @@ supported generation of a given micro-processor. So it will build these source
 files once for [Intel® Skylake](https://en.wikipedia.org/wiki/Skylake_(microarchitecture)), once for [Intel® Ice Lake](https://en.wikipedia.org/wiki/Ice_Lake_(microprocessor)), once for [Intel® Haswell](https://en.wikipedia.org/wiki/Haswell_(microarchitecture))  
 and so on. It does this to give the compiler an opportunity to apply  
 micro-processor generation specific optimizations during the build, by  
-specifying the build parameter \`-march=skylake\`, \`-march=icelake-server\` and  
-\`-march=haswell\` respectively. The build system figures out which source files  
+specifying the build parameter `-march=skylake`, `-march=icelake-server` and  
+`-march=haswell` respectively. The build system figures out which source files  
 need to be built multiple times by looking at those specified in the  
-[VNET<sub>MULTIARCH</sub><sub>SOURCES</sub>](https://git.fd.io/vpp/tree/src/vnet/CMakeLists.txt) list, instead of the [VNET<sub>SOURCES</sub>](https://git.fd.io/vpp/tree/src/vnet/CMakeLists.txt) list which specifies  
+[VNET\_MULTIARCH\_SOURCES](https://git.fd.io/vpp/tree/src/vnet/CMakeLists.txt) list, instead of the [VNET\_SOURCES](https://git.fd.io/vpp/tree/src/vnet/CMakeLists.txt) list which specifies  
 those files that are built just once.  
 
 The result of this build system wizardry is that there may be multiple versions  
 of any given VPP graph node (called node variants) in the VPP fat binary, one  
-for \`Skylake\`, one for \`Ice Lake\` … you get the idea by now. When VPP starts-up  
+for `Skylake`, one for `Ice Lake` … you get the idea by now. When VPP starts-up  
 it looks at the micro-processor that it is running on, identifies the generation  
 of the micro-processor and selects then optimal variant of a graph node to run.  
 Unless you go digging into guts of FD.io VPP, you’ll should be oblivious that  
 this variant runtime selection is going on. You can however look at a graph  
-node, and then list it’s variants with the \`show node <name>\` command.  
+node, and then list it’s variants with the `show node <name>` command.  
 
-Note the example below is running on Intel® Cascade Lake, so the \`skx\` variant  
+Note the example below is running on Intel® Cascade Lake, so the `skx` variant  
 has the highest priority and the Intel® Ice Lake variant is disabled.  
 
     vpp# show node ip4-rewrite
@@ -54,7 +54,7 @@ has the highest priority and the Intel® Ice Lake variant is disabled.
         ip4-classify (328)
 
 You can then change the variant that is being used at runtime, with the command  
-\`set node function\`.  
+`set node function`.  
 
     vpp# set node function ip4-rewrite hsw
     vpp# show node ip4-rewrite
@@ -80,22 +80,22 @@ You can then change the variant that is being used at runtime, with the command
         ip4-classify (328)
 
 Different graph node variants support different micro-processor  
-instruction-sets, the \`Skylake\` variant supports [Intel® AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions), the \`Ice Lake\`  
-variant supports [Intel® AVX-512](https://en.wikipedia.org/wiki/AVX-512) and the \`Haswell\` variant supports [Intel®  
+instruction-sets, the `Skylake` variant supports [Intel® AVX2](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions), the `Ice Lake`  
+variant supports [Intel® AVX-512](https://en.wikipedia.org/wiki/AVX-512) and the `Haswell` variant supports [Intel®  
 SSE-4.2](https://en.wikipedia.org/wiki/SSE4). This gives the compiler the option of using these instruction-sets when  
 optimizing the variants. It also gives the Software Engineer the option to  
 handcraft micro-processor generation specific optimizations and have them  
 incorporated into specific graph node variants. These are wrapped in the MACROS  
-\` CLIB<sub>HAVE</sub><sub>VEC256</sub>\`, \` CLIB<sub>HAVE</sub><sub>VEC512</sub>\` and \` CLIB<sub>HAVE</sub><sub>VEC128</sub>\`, which  
-correspond to \`AVX2\`, \`AVX512\` and \`SSE4.2\` respectively.  
+~ CLIB\_HAVE\_VEC256~, ~ CLIB\_HAVE\_VEC512~ and ~ CLIB\_HAVE\_VEC128~, which  
+correspond to `AVX2`, `AVX512` and `SSE4.2` respectively.  
 
-A good example of this pattern is the function [\`vlib<sub>get</sub><sub>buffers</sub><sub>with</sub><sub>offset</sub>\`](https://git.fd.io/vpp/tree/src/vlib/buffer_funcs.h?id=542088597886df774e63f841166721deeffef1c1),  
+A good example of this pattern is the function [vlib\_get\_buffers\_with\_offset](https://git.fd.io/vpp/tree/src/vlib/buffer_funcs.h?id=542088597886df774e63f841166721deeffef1c1),  
 this function converts buffer indexes into buffer pointers. Note how the  
-\`AVX-512\` variant of [\`vlib<sub>get</sub><sub>buffers</sub><sub>with</sub><sub>offset</sub>\` is wrapped in  
-\`CLIB<sub>HAVE</sub><sub>VEC512</sub>\`. The variant](https://git.fd.io/vpp/tree/src/vlib/buffer_funcs.h?id=542088597886df774e63f841166721deeffef1c1) loads 8 buffer indexes at a time, and then  
+\`AVX-512\` variant of [vlib\_get\_buffers\_with\_offset is wrapped in  
+\`CLIB\_HAVE\_VEC512\`. The variant](https://git.fd.io/vpp/tree/src/vlib/buffer_funcs.h?id=542088597886df774e63f841166721deeffef1c1) loads 8 buffer indexes at a time, and then  
 applies a vector shift, then vector adds the base address to calculate 8 buffer  
 addresses in parallel, before doing a parallel store of the 8 buffer addresses.  
-There are also \`AVX2\` and \`SSE4.2\` versions of this code, which gets called by  
+There are also `AVX2` and `SSE4.2` versions of this code, which gets called by  
 most graph nodes.  
 
 ```C
