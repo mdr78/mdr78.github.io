@@ -28,8 +28,8 @@ Unless you go digging into guts of FD.io VPP, you’ll should be oblivious that
 this variant runtime selection is going on. You can however look at a graph  
 node, and then list it’s variants with the `show node <name>` command.  
 
-Note the example below is running on Intel® Cascade Lake, so the `skx` variant  
-has the highest priority and the Intel® Ice Lake variant is disabled.  
+Note the example below is running on **Intel® Cascade Lake**, so the `skx` variant  
+has the highest priority and the **Intel® Ice Lake variant** is disabled.  
 
     vpp# show node ip4-rewrite
     node ip4-rewrite, type internal, state active, index 315
@@ -89,14 +89,14 @@ incorporated into specific graph node variants. These are wrapped in the MACROS
 `CLIB_HAVE_VEC256`, `CLIB_HAVE_VEC512` and `CLIB_HAVE_VEC128`, which correspond  
 to **AVX2**, **AVX512** and **SSE4.2** respectively.  
 
-A good example of this pattern is the function [vlib\_get\_buffers\_with\_offset](https://git.fd.io/vpp/tree/src/vlib/buffer_funcs.h?id=542088597886df774e63f841166721deeffef1c1),  
-this function converts buffer indexes into buffer pointers. Note how the  
-**AVX-512** variant of [vlib\_get\_buffers\_with\_offset is wrapped in  
-\`CLIB\_HAVE\_VEC512\`. The variant](https://git.fd.io/vpp/tree/src/vlib/buffer_funcs.h?id=542088597886df774e63f841166721deeffef1c1) loads 8 buffer indexes at a time, and then  
-applies a vector shift, then vector adds the base address to calculate 8 buffer  
-addresses in parallel, before doing a parallel store of the 8 buffer addresses.  
-There are also **AVX2** and **SSE4.2** versions of this code, which gets called by  
-most graph nodes.  
+A good example of this pattern is the function [vlib\_get\_buffers\_with\_offset](https://git.fd.io/vpp/tree/src/vlib/buffer_funcs.h?id=542088597886df774e63f841166721deeffef1c1),    
+this function converts buffer indexes into buffer pointers. Note how the    
+**AVX-512** variant of [vlib\_get\_buffers\_with\_offset](https://git.fd.io/vpp/tree/src/vlib/buffer_funcs.h?id=542088597886df774e63f841166721deeffef1c1)
+is wrapped in `CLIB_HAVE_VEC512`.    
+The variant loads 8 buffer indexes at a time, and then applies a vector shift, then    
+vector adds the base address to calculate 8 buffer addresses in parallel, before       
+doing a parallel store of the 8 buffer addresses. There are also **AVX2** and       
+**SSE4.2** versions of this code, which gets called by most graph nodes.    
 
 ```C
 static_always_inline void
